@@ -8,34 +8,22 @@
 
   <style>
     :root{
-      --bg-img: url("Copilot_20250819_075823.png"); /* <-- your background image in same folder */
+      --bg-img: url("Copilot_20250819_075823.png");
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.70);
-      --thin: rgba(255,255,255,.18);
-      --ring: rgba(140,220,255,.28);
-      --ring2: rgba(120,255,220,.18);
-      --glass: rgba(0,0,0,.35);
-      --glass2: rgba(0,0,0,.55);
     }
-const WHISPERS = [
-  "Breathe. The door is already open.",
-  "Choose nothing. Let it arrive.",
-  "What you seek is seeking you.",
-  "Home isn’t far — it’s near enough to feel.",
-  "The next step is gentleness."
-];
+
     html, body { height: 100%; }
     body{
       margin:0;
       color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       overflow-x: hidden;
       background:
         radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.10), rgba(0,0,0,.75)),
         var(--bg-img) center/cover no-repeat fixed;
     }
 
-    /* Soft vignette for cinematic depth */
     .vignette{
       position: fixed;
       inset: 0;
@@ -59,7 +47,7 @@ const WHISPERS = [
       display:flex;
       flex-direction: column;
       align-items:center;
-      gap: 18px;
+      gap: 16px;
     }
 
     .headline{
@@ -74,19 +62,23 @@ const WHISPERS = [
     .sub{
       margin: 0;
       text-align:center;
-      max-width: 56ch;
+      max-width: 60ch;
       color: var(--muted);
       font-size: 14px;
       line-height: 1.5;
       text-shadow: 0 10px 30px rgba(0,0,0,.55);
     }
 
-    /* Portal */
+    /* ===== Portal (mobile-proof circle) =====
+       We DO NOT rely on aspect-ratio.
+       We force equal width + height to avoid “circle in a square” on mobile.
+    */
     .portal{
+      --size: min(520px, 92vw);
       position: relative;
-      width: min(520px, 92vw);
-      aspect-ratio: 1 / 1;
-      border-radius: 999px;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
       display:grid;
       place-items:center;
       background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.35));
@@ -98,7 +90,6 @@ const WHISPERS = [
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* shimmer layer */
     .portal::before{
       content:"";
       position:absolute;
@@ -116,18 +107,6 @@ const WHISPERS = [
       transform-origin: center;
     }
 
-    /* subtle grain */
-    .portal::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px);
-      background-size: 4px 4px;
-      opacity:.05;
-      mix-blend-mode: overlay;
-      pointer-events:none;
-    }
-
     @keyframes drift{
       0%   { transform: rotate(0deg) scale(1.06); }
       100% { transform: rotate(360deg) scale(1.06); }
@@ -136,7 +115,7 @@ const WHISPERS = [
     .ring{
       position:absolute;
       inset: 14px;
-      border-radius: 999px;
+      border-radius: 50%;
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.14),
         inset 0 0 45px rgba(140,220,255,.14),
@@ -148,7 +127,7 @@ const WHISPERS = [
       position: relative;
       width: 72%;
       height: 72%;
-      border-radius: 999px;
+      border-radius: 50%;
       background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.55));
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.12),
@@ -160,50 +139,55 @@ const WHISPERS = [
       z-index: 2;
     }
 
-    .mark{
-      font-size: clamp(20px, 2.2vw, 26px);
-      letter-spacing: .06em;
-      opacity: .92;
-      margin: 0 0 10px 0;
+    /* The oracle tap target (big ¿) */
+    .oracle{
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,.93);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
     }
 
-    .micro{
-      margin: 0;
+    .oracle:focus{ outline: none; }
+    .oracle:focus-visible{
+      box-shadow: 0 0 0 3px rgba(255,255,255,.18), 0 0 0 10px rgba(140,220,255,.10);
+    }
+
+    .qmark{
+      font-size: clamp(92px, 12vw, 140px);
+      line-height: 1;
+      letter-spacing: .02em;
+      text-shadow:
+        0 18px 60px rgba(0,0,0,.65),
+        0 0 35px rgba(140,220,255,.18);
+      transform: translateY(-2px);
+      opacity: .96;
+    }
+
+    .hint{
+      margin-top: 10px;
       font-size: 13px;
       color: var(--muted);
       line-height: 1.45;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
     }
 
-    /* Button */
-    .btnRow{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 10px;
-      width: 100%;
-      margin-top: 6px;
+    /* subtle “breath” pulse on the mark only (not cheesy) */
+    @keyframes breathe{
+      0%   { transform: translateY(-2px) scale(1.0); opacity: .92; }
+      50%  { transform: translateY(-2px) scale(1.02); opacity: .98; }
+      100% { transform: translateY(-2px) scale(1.0); opacity: .92; }
     }
-
-    .btn{
-      appearance:none;
-      border: 1px solid rgba(255,255,255,.20);
-      background: rgba(0,0,0,.35);
-      color: var(--text);
-      padding: 12px 16px;
-      border-radius: 14px;
-      font-size: 15px;
-      letter-spacing: .02em;
-      box-shadow:
-        0 18px 55px rgba(0,0,0,.35),
-        inset 0 0 0 1px rgba(255,255,255,.06);
-      cursor:pointer;
-      transition: transform .08s ease, background .2s ease, border-color .2s ease;
-      backdrop-filter: blur(8px);
-      -webkit-tap-highlight-color: transparent;
+    .oracle:not(:active) .qmark{
+      animation: breathe 4.6s ease-in-out infinite;
     }
-
-    .btn:active{ transform: translateY(1px) scale(.995); }
-    .btn:hover{ background: rgba(0,0,0,.45); border-color: rgba(255,255,255,.28); }
 
     .status{
       margin: 0;
@@ -215,7 +199,7 @@ const WHISPERS = [
       text-shadow: 0 10px 30px rgba(0,0,0,.55);
     }
 
-    /* ---------- Mobile-safe overlay (no popups) ---------- */
+    /* ===== Overlays (mobile-safe, no popups) ===== */
     .bfOverlay{
       position: fixed;
       inset: 0;
@@ -263,7 +247,23 @@ const WHISPERS = [
       background:#000;
     }
 
-    /* Footer mark */
+    .whisperWrap{
+      position:absolute;
+      top:56px; left:0; right:0; bottom:0;
+      display:grid;
+      place-items:center;
+      padding:26px;
+    }
+
+    .whisperText{
+      max-width:65ch;
+      font-size: clamp(18px, 2.2vw, 26px);
+      line-height:1.55;
+      text-align:center;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 12px 40px rgba(0,0,0,.65);
+    }
+
     .footer{
       margin-top: 6px;
       font-size: 12px;
@@ -284,18 +284,16 @@ const WHISPERS = [
 
       <section class="portal" aria-label="BlissFlip portal">
         <div class="ring"></div>
+
         <div class="core">
-          <p class="mark">¿</p>
-          <p class="micro">
-            If you are here, you are here for a reason.<br/>
-            Tap once. Let the moment choose.
-          </p>
+          <button id="oracleTap" class="oracle" type="button" aria-label="BlissFlip oracle">
+            <div>
+              <div class="qmark">¿</div>
+              <div class="hint">Tap once. Let the moment choose.</div>
+            </div>
+          </button>
         </div>
       </section>
-
-      <div class="btnRow">
-        <button id="spinBtn" class="btn" type="button">Spin Yourself Home</button>
-      </div>
 
       <p id="status" class="status"></p>
 
@@ -303,7 +301,7 @@ const WHISPERS = [
     </main>
   </div>
 
-  <!-- In-page Experience Overlay (mobile-safe, no popups) -->
+  <!-- i-Experiencer overlay -->
   <div id="bfOverlay" class="bfOverlay" aria-hidden="true">
     <div class="bfBar">
       <button id="bfBack" class="bfBtn" type="button">← Return</button>
@@ -322,91 +320,125 @@ const WHISPERS = [
     ></iframe>
   </div>
 
+  <!-- Whisper overlay -->
+  <div id="whisperOverlay" class="bfOverlay" aria-hidden="true">
+    <div class="bfBar">
+      <button id="whisperBack" class="bfBtn" type="button">← Return</button>
+      <div class="bfTitle">Whisper</div>
+      <button id="whisperClose" class="bfBtn" type="button">✕</button>
+    </div>
+    <div class="whisperWrap">
+      <div id="whisperText" class="whisperText"></div>
+    </div>
+  </div>
+
   <script>
-    // 1) Put your real i-Experiencer URLs here.
-    // These should be direct experience pages you want to open.
-    // If an experience refuses to load in an iframe (blank screen),
-    // it means that host blocks embedding; tell me and we’ll use a same-tab fallback.
+    // Your Bunny i-Experiencer URLs
     const EXPERIENCES = [
       "https://iframe.mediadelivery.net/play/477963/58e76783-cdd1-45f3-aca7-5df5661f674f?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/c8f20447-7b5d-4894-a9b1-74b81fbeee68?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/bab3edcb-8381-46e2-b615-88720237acf5?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/4bbf7086-2926-445f-a53b-ef152d70c90a?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/51017476-437d-4e74-b636-953ad16f1fb6?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/668f88fb-e9c2-4b8d-be1e-ae81364ffab6?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/0cc850a0-f02e-4d52-9c44-8b9981f4cd51?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/318be683-c664-41e6-8e0c-608bf3c68e5a?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/757ad818-9626-4f0c-84ef-1aff6fcba5ad?1768965668074",
+      "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed?1768965668074"
       // ...add more
     ];
 
-    // Optional titles (same length as EXPERIENCES). If omitted, "i-Experiencer" is used.
-    const EXPERIENCE_TITLES = [
-      "i-Experiencer",
-      "i-Experiencer",
-      "i-Experiencer"
+    // Whisper lines
+    const WHISPERS = [
+      "Breathe. The door is already open.",
+      "Choose nothing. Let it arrive.",
+      "What you seek is seeking you.",
+      "Home isn’t far — it’s near enough to feel.",
+      "The next step is gentleness."
     ];
 
-    const spinBtn   = document.getElementById("spinBtn");
+    const oracleTap = document.getElementById("oracleTap");
     const statusEl  = document.getElementById("status");
 
+    // i-Experiencer overlay
     const bfOverlay = document.getElementById("bfOverlay");
     const bfFrame   = document.getElementById("bfFrame");
     const bfBack    = document.getElementById("bfBack");
     const bfClose   = document.getElementById("bfClose");
     const bfTitle   = document.getElementById("bfTitle");
 
-    function pickRandomIndex(n){
-      return Math.floor(Math.random() * n);
+    // Whisper overlay
+    const whisperOverlay = document.getElementById("whisperOverlay");
+    const whisperText    = document.getElementById("whisperText");
+    const whisperBack    = document.getElementById("whisperBack");
+    const whisperClose   = document.getElementById("whisperClose");
+
+    function pickRandom(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function openBlissFlipExperience(url, title){
-      bfTitle.textContent = title || "i-Experiencer";
-      bfFrame.src = url;
-      bfOverlay.classList.add("isOpen");
-      bfOverlay.setAttribute("aria-hidden","false");
-      // prevent background scroll on mobile
+    function lockScroll(){
       document.documentElement.style.overflow = "hidden";
       document.body.style.overflow = "hidden";
     }
 
-    function closeBlissFlipExperience(){
+    function unlockScroll(){
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
+
+    function openExperience(url, title){
+      bfTitle.textContent = title || "i-Experiencer";
+      bfFrame.src = url;
+      bfOverlay.classList.add("isOpen");
+      bfOverlay.setAttribute("aria-hidden","false");
+      lockScroll();
+    }
+
+    function closeExperience(){
       bfOverlay.classList.remove("isOpen");
       bfOverlay.setAttribute("aria-hidden","true");
       bfFrame.src = "about:blank";
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow = "";
+      unlockScroll();
       statusEl.textContent = "";
     }
 
-    bfBack.addEventListener("click", closeBlissFlipExperience);
-    bfClose.addEventListener("click", closeBlissFlipExperience);
+    function openWhisper(msg){
+      whisperText.textContent = msg;
+      whisperOverlay.classList.add("isOpen");
+      whisperOverlay.setAttribute("aria-hidden","false");
+      lockScroll();
+    }
 
-    // ESC closes overlay (desktop)
+    function closeWhisper(){
+      whisperOverlay.classList.remove("isOpen");
+      whisperOverlay.setAttribute("aria-hidden","true");
+      unlockScroll();
+      statusEl.textContent = "";
+    }
+
+    bfBack.addEventListener("click", closeExperience);
+    bfClose.addEventListener("click", closeExperience);
+    whisperBack.addEventListener("click", closeWhisper);
+    whisperClose.addEventListener("click", closeWhisper);
+
     window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeBlissFlipExperience();
+      if (e.key === "Escape"){
+        closeExperience();
+        closeWhisper();
+      }
     });
 
-    // The one-button oracle:
-    spinBtn.addEventListener("click", () => {
-      if (!Array.isArray(EXPERIENCES) || EXPERIENCES.length === 0){
+    // One-tap oracle: sometimes whisper, sometimes i-Experiencer
+    oracleTap.addEventListener("click", () => {
+      statusEl.textContent = "…";
+
+      const whisperFirst = (Math.random() < 0.35); // adjust ratio if you like
+
+      if (whisperFirst){
+        openWhisper(pickRandom(WHISPERS));
+        return;
+      }
+
+      if (!EXPERIENCES.length){
         statusEl.textContent = "No experiences configured yet.";
         return;
       }
 
-      // Tiny moment of ceremony
-      statusEl.textContent = "…";
-
-      const i = pickRandomIndex(EXPERIENCES.length);
-      const url = EXPERIENCES[i];
-      const title = (EXPERIENCE_TITLES && EXPERIENCE_TITLES[i]) ? EXPERIENCE_TITLES[i] : "i-Experiencer";
-
-      // Open IN-PAGE (mobile safe)
-      openBlissFlipExperience(url, title);
+      openExperience(pickRandom(EXPERIENCES), "i-Experiencer");
     });
   </script>
 </body>
 </html>
-
-
