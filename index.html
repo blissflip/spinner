@@ -29,7 +29,7 @@
       inset: 0;
       pointer-events: none;
       background:
-        radial-gradient(900px 500px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.38) 55%, rgba(0,0,0,.70) 100%),
+        radial-gradient(900px 500px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.28) 55%, rgba(0,0,0,.55) 100%),
         linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.55));
       mix-blend-mode: multiply;
     }
@@ -81,31 +81,39 @@
       border-radius: 50%;
       display:grid;
       place-items:center;
-      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.35));
+      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(0,0,0,.55));
       box-shadow:
         0 20px 90px rgba(0,0,0,.55),
         inset 0 0 0 1px rgba(255,255,255,.12);
       overflow:hidden;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
+        overflow:hidden;
+  border-radius:50%;
     }
 
-    .portal::before{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background:
-        conic-gradient(from 180deg,
-          rgba(120,255,220,0.00),
-          rgba(140,220,255,0.22),
-          rgba(255,255,255,0.08),
-          rgba(120,255,220,0.14),
-          rgba(140,220,255,0.00));
-      filter: blur(8px);
-      opacity: .9;
-      animation: drift 7.5s linear infinite;
-      transform-origin: center;
-    }
+  .swirl{
+  position:absolute;
+  inset:-40%;
+  border-radius:50%;
+  background:
+    conic-gradient(from 180deg,
+      rgba(120,255,220,0.00),
+      rgba(140,220,255,0.22),
+      rgba(255,255,255,0.08),
+      rgba(120,255,220,0.14),
+      rgba(140,220,255,0.00));
+  filter: blur(8px);
+  opacity:.85;
+  animation: drift 7.5s linear infinite;
+  pointer-events:none;
+
+    <section class="portal">
+  <div class="swirl"></div>
+  <div class="ring"></div>
+  <div class="core">...</div>
+</section>
+}
 
     @keyframes drift{
       0%   { transform: rotate(0deg) scale(1.06); }
@@ -442,3 +450,4 @@
   </script>
 </body>
 </html>
+
