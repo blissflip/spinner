@@ -1,514 +1,158 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#000000" />
-  <title>BlissFlip ¿</title>
+  <meta charset="UTF-8" />
+  <title>BlissFlip</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    :root{
-      --bg-img: url("Copilot_20250819_075823.png");
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.72);
-    }
-
-    html, body { height: 100%; }
-
-    body{
-      margin:0;
-      color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      overflow-x: hidden;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      background:
-        radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.06), rgba(0,0,0,.52)),
-        var(--bg-img) center/cover no-repeat;
-    }
-
-    .vignette{
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(900px 500px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.22) 55%, rgba(0,0,0,.46) 100%),
-        linear-gradient(to bottom, rgba(0,0,0,.08), rgba(0,0,0,.38));
-      mix-blend-mode: multiply;
-    }
-
-    .wrap{
-      min-height: 100svh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:
-        calc(18px + env(safe-area-inset-top))
-        16px
-        calc(18px + env(safe-area-inset-bottom));
-    }
-
-    .stage{
-      width: min(980px, 100%);
-      display:flex;
-      flex-direction: column;
-      align-items:center;
-      gap: 12px;
-      text-align:center;
-    }
-
-    .headline{
+    /* =========================
+       GLOBAL RESET
+    ========================== */
+    html, body {
       margin: 0;
-      line-height: 1.1;
-      letter-spacing: .02em;
-      font-size: clamp(22px, 2.6vw, 34px);
-      text-shadow: 0 10px 30px rgba(0,0,0,.55);
-    }
-
-    .sub{
-      margin: 0;
-      max-width: 60ch;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-      text-shadow: 0 10px 30px rgba(0,0,0,.55);
-    }
-
-    /* ===== Portal with HARD circular clipping (fixes iOS “lower-half square leak”) ===== */
-    .portal{
-      width: clamp(260px, 82vw, 520px);
-      height: clamp(260px, 82vw, 520px);
-      position: relative;
-      display:grid;
-      place-items:center;
-
-      border-radius: 50%;
-      overflow: hidden;
-
-      /* Hard clip WebKit compositor surfaces */
-      -webkit-clip-path: circle(50% at 50% 50%);
-      clip-path: circle(50% at 50% 50%);
-      contain: paint;
-      isolation: isolate;
-
-      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(0,0,0,.20));
-      box-shadow:
-        0 20px 90px rgba(0,0,0,.50),
-        inset 0 0 0 1px rgba(255,255,255,.12);
-
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      transform: translateZ(0);
-    }
-
-    @media (orientation: landscape){
-      .portal{
-        width: clamp(220px, 48svh, 380px);
-        height: clamp(220px, 48svh, 380px);
-      }
-      .wrap{
-        padding:
-          calc(12px + env(safe-area-inset-top))
-          14px
-          calc(12px + env(safe-area-inset-bottom));
-      }
-      .stage{ gap: 10px; }
-      .sub{ font-size: 13px; }
-    }
-
-    /* Swirl (animated) */
-    .swirl{
-      position:absolute;
-      inset:-40%;
-      border-radius:50%;
-
-      /* ALSO hard-clip the swirl surface */
-      -webkit-clip-path: circle(50% at 50% 50%);
-      clip-path: circle(50% at 50% 50%);
-
-      background:
-        conic-gradient(from 180deg,
-          rgba(120,255,220,0.00),
-          rgba(140,220,255,0.22),
-          rgba(255,255,255,0.08),
-          rgba(120,255,220,0.14),
-          rgba(140,220,255,0.00));
-
-      filter: blur(8px);
-      opacity: .82;
-
-      -webkit-animation: drift 7.5s linear infinite;
-      animation: drift 7.5s linear infinite;
-
-      will-change: transform;
-      transform: translateZ(0);
-      pointer-events:none;
-    }
-
-    @-webkit-keyframes drift{
-      0%   { -webkit-transform: translateZ(0) rotate(0deg) scale(1.06); }
-      100% { -webkit-transform: translateZ(0) rotate(360deg) scale(1.06); }
-    }
-    @keyframes drift{
-      0%   { transform: translateZ(0) rotate(0deg) scale(1.06); }
-      100% { transform: translateZ(0) rotate(360deg) scale(1.06); }
-    }
-
-    /* Soft “glass” overlay (clipped too) */
-    .portal::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:50%;
-      pointer-events:none;
-
-      /* Hard-clip overlay as well */
-      -webkit-clip-path: circle(50% at 50% 50%);
-      clip-path: circle(50% at 50% 50%);
-
-      /* gentle glow; avoids heavy darkening */
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.10),
-        inset 0 0 40px rgba(140,220,255,.10);
-    }
-
-    .ring{
-      position:absolute;
-      inset: 14px;
-      border-radius: 50%;
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.14),
-        inset 0 0 45px rgba(140,220,255,.14),
-        0 0 55px rgba(120,255,220,.10);
-      pointer-events:none;
-    }
-
-    .core{
-      position: relative;
-      width: 72%;
-      height: 72%;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.50));
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.12),
-        inset 0 0 80px rgba(0,0,0,.62);
-      display:grid;
-      place-items:center;
-      padding: 14px;
-      z-index: 2;
-    }
-
-    .oracle{
-      appearance: none;
-      border: none;
-      background: transparent;
-      color: rgba(255,255,255,.93);
-      cursor: pointer;
+      padding: 0;
       width: 100%;
       height: 100%;
-      border-radius: 50%;
-      display:grid;
-      place-items:center;
-      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #000;
+      color: #fff;
     }
 
-    .oracle:focus{ outline: none; }
-    .oracle:focus-visible{
-      box-shadow: 0 0 0 3px rgba(255,255,255,.18), 0 0 0 10px rgba(140,220,255,.10);
+    /* =========================
+       BACKGROUND (Village)
+       Replace image URL if needed
+    ========================== */
+    body {
+      background:
+        radial-gradient(
+          1200px 600px at 50% 45%,
+          rgba(255, 255, 255, 0.12),
+          rgba(0, 0, 0, 0.85)
+        ),
+        url("village.jpg") center / cover no-repeat;
     }
 
-    .qmark{
-      font-size: clamp(92px, 12vw, 140px);
-      line-height: 1;
-      text-shadow:
-        0 18px 60px rgba(0,0,0,.65),
-        0 0 35px rgba(140,220,255,.18);
-      transform: translateY(-2px);
-      opacity: .96;
-    }
-
-    .hint{
-      margin-top: 8px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.45;
-      text-shadow: 0 10px 30px rgba(0,0,0,.55);
-    }
-
-    @keyframes breathe{
-      0%   { transform: translateY(-2px) scale(1.0); opacity: .92; }
-      50%  { transform: translateY(-2px) scale(1.02); opacity: .98; }
-      100% { transform: translateY(-2px) scale(1.0); opacity: .92; }
-    }
-    .oracle:not(:active) .qmark{
-      animation: breathe 4.6s ease-in-out infinite;
-    }
-
-    .status{
-      margin: 0;
-      min-height: 20px;
-      font-size: 13px;
-      color: var(--muted);
-      text-shadow: 0 10px 30px rgba(0,0,0,.55);
-    }
-
-    .footer{
-      margin-top: 2px;
-      font-size: 12px;
-      color: rgba(255,255,255,.55);
-      letter-spacing: .02em;
-    }
-
-    /* ===== Overlays ===== */
-    .bfOverlay{
-      position: fixed;
+    /* =========================
+       PORTAL CONTAINER
+    ========================== */
+    .portal {
+      position: absolute;
       inset: 0;
-      display: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .portal-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      opacity: 0.8;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .portal-circle:hover {
+      opacity: 1;
+      transform: scale(1.03);
+    }
+
+    /* =========================
+       STATUS TEXT
+    ========================== */
+    #status {
+      position: fixed;
+      bottom: 64px;
+      width: 100%;
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* =========================
+       BOOK SIGNATURE
+    ========================== */
+    .blissflip-books {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      opacity: 0.45;
+      text-decoration: none;
+      color: inherit;
       z-index: 99999;
-      background: rgba(0,0,0,0.92);
-    }
-    .bfOverlay.isOpen{ display:block; }
-
-    .bfBar{
-      position:absolute; top:0; left:0; right:0;
-      height:56px;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:10px 12px; gap:10px;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    @media (orientation: landscape){
-      .bfBar{ height:46px; padding:8px 10px; }
+      transition: opacity 0.4s ease;
     }
 
-    .bfTitle{
-      font-size:14px;
-      opacity:0.85;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width:40vw;
+    .blissflip-books:hover {
+      opacity: 0.8;
     }
 
-    .bfBtns{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-
-    .bfBtn{
-      appearance:none;
-      border:1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.92);
-      padding:8px 10px;
-      border-radius:10px;
-      cursor:pointer;
-      font-size: 14px;
-    }
-
-    .bfFrame{
-      position:absolute;
-      top:56px; left:0; right:0; bottom:0;
-      width:100%;
-      height:calc(100% - 56px);
-      border:0;
-      background:#000;
-    }
-    @media (orientation: landscape){
-      .bfFrame{ top:46px; height: calc(100% - 46px); }
-    }
-
-    .whisperWrap{
-      position:absolute;
-      top:56px; left:0; right:0; bottom:0;
-      display:grid;
-      place-items:center;
-      padding:22px;
-    }
-    @media (orientation: landscape){
-      .whisperWrap{ top:46px; }
-    }
-
-    .whisperText{
-      max-width:65ch;
-      font-size: clamp(18px, 2.2vw, 26px);
-      line-height:1.55;
-      text-align:center;
-      color: rgba(255,255,255,.92);
-      text-shadow: 0 12px 40px rgba(0,0,0,.65);
+    /* =========================
+       YINYANGI (optional)
+    ========================== */
+    .yinyangi-footer {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      opacity: 0.35;
+      pointer-events: none;
     }
   </style>
 </head>
 
 <body>
-  <div class="vignette"></div>
 
-  <div class="wrap">
-    <main class="stage">
-      <h1 class="headline">BlissFlip ¿</h1>
-      <p class="sub">For a star-child, home is closer than you think.</p>
-
-      <section class="portal" aria-label="BlissFlip portal">
-        <div class="swirl"></div>
-        <div class="ring"></div>
-
-        <div class="core">
-          <button id="oracleTap" class="oracle" type="button" aria-label="BlissFlip oracle">
-            <div>
-              <div class="qmark">¿</div>
-              <div class="hint">Tap once. Let the moment choose.</div>
-            </div>
-          </button>
-        </div>
-      </section>
-
-      <p id="status" class="status"></p>
-      <div class="footer">yinyangi</div>
-    </main>
+  <!-- PORTAL -->
+  <div class="portal" id="portal">
+    <div class="portal-circle">¿</div>
   </div>
 
-  <!-- i-Experiencer overlay -->
-  <div id="bfOverlay" class="bfOverlay" aria-hidden="true">
-    <div class="bfBar">
-      <button id="bfBack" class="bfBtn" type="button">← Return</button>
-      <div class="bfTitle" id="bfTitle">i-Experiencer</div>
-      <div class="bfBtns">
-        <button id="bfOpen" class="bfBtn" type="button">Open Fullscreen</button>
-        <button id="bfClose" class="bfBtn" type="button">✕</button>
-      </div>
-    </div>
+  <!-- STATUS -->
+  <div id="status"></div>
 
-    <iframe
-      id="bfFrame"
-      class="bfFrame"
-      src="about:blank"
-      allow="autoplay; fullscreen; picture-in-picture"
-      allowfullscreen
-      loading="eager"
-      referrerpolicy="no-referrer-when-downgrade"
-    ></iframe>
-  </div>
+  <!-- BOOK SIGNATURE -->
+  <a
+    href="https://www.amazon.co.uk/BLISSFLIP-UNPUZZLER-PARADIGM-Bliss-that-question/dp/B0GH883KND"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="blissflip-books"
+  >
+    BlissFlip Paradigm Books
+  </a>
 
-  <!-- Whisper overlay -->
-  <div id="whisperOverlay" class="bfOverlay" aria-hidden="true">
-    <div class="bfBar">
-      <button id="whisperBack" class="bfBtn" type="button">← Return</button>
-      <div class="bfTitle">Whisper</div>
-      <div class="bfBtns">
-        <button id="whisperClose" class="bfBtn" type="button">✕</button>
-      </div>
-    </div>
-    <div class="whisperWrap">
-      <div id="whisperText" class="whisperText"></div>
-    </div>
-  </div>
+  <!-- OPTIONAL SIGNATURE -->
+  <div class="yinyangi-footer">YinYangi</div>
 
   <script>
-    const EXPERIENCES = [
-      "https://iframe.mediadelivery.net/play/477963/58e76783-cdd1-45f3-aca7-5df5661f674f?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed?1768965668074"
-      // add more...
-    ];
+    /* =========================
+       CONFIG
+    ========================== */
+    const whisperFirst = true;
 
     const WHISPERS = [
-      "Breathe. The door is already open.",
-      "Choose nothing. Let it arrive.",
-      "What you seek is seeking you.",
-      "Home isn’t far — it’s near enough to feel.",
-      "The next step is gentleness."
+      "Why does it hurt just to be me?",
+      "What remains if I stop trying?",
+      "Is my brokenness a mistake?"
     ];
 
-    const oracleTap = document.getElementById("oracleTap");
-    const statusEl  = document.getElementById("status");
+    const EXPERIENCES = [
+      // Bunny iframe URLs go here
+      // "https://iframe.mediadelivery.net/play/..."
+    ];
 
-    const bfOverlay = document.getElementById("bfOverlay");
-    const bfFrame   = document.getElementById("bfFrame");
-    const bfBack    = document.getElementById("bfBack");
-    const bfClose   = document.getElementById("bfClose");
-    const bfOpen    = document.getElementById("bfOpen");
-    const bfTitle   = document.getElementById("bfTitle");
-
-    const whisperOverlay = document.getElementById("whisperOverlay");
-    const whisperText    = document.getElementById("whisperText");
-    const whisperBack    = document.getElementById("whisperBack");
-    const whisperClose   = document.getElementById("whisperClose");
-
-    let lastExperienceUrl = "";
-
-    function pickRandom(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function openExperience(url){
-      lastExperienceUrl = url;
-      bfTitle.textContent = "i-Experiencer";
-      bfFrame.src = url;
-      bfOverlay.classList.add("isOpen");
-      bfOverlay.setAttribute("aria-hidden","false");
-      statusEl.textContent = "";
-    }
-
-    function openWhisper(msg){
-      whisperText.textContent = msg;
-      whisperOverlay.classList.add("isOpen");
-      whisperOverlay.setAttribute("aria-hidden","false");
-      statusEl.textContent = "";
-    }
-
-    function closeWhisper(){
-      whisperOverlay.classList.remove("isOpen");
-      whisperOverlay.setAttribute("aria-hidden","true");
-      statusEl.textContent = "";
-    }
-
-    function closeExperienceAndWhisper(){
-      bfOverlay.classList.remove("isOpen");
-      bfOverlay.setAttribute("aria-hidden","true");
-      bfFrame.src = "about:blank";
-      setTimeout(() => openWhisper(pickRandom(WHISPERS)), 120);
-    }
-
-    bfBack.addEventListener("click", closeExperienceAndWhisper);
-    bfClose.addEventListener("click", closeExperienceAndWhisper);
-
-    bfOpen.addEventListener("click", () => {
-      if (lastExperienceUrl) window.location.href = lastExperienceUrl;
-    });
-
-    whisperBack.addEventListener("click", closeWhisper);
-    whisperClose.addEventListener("click", closeWhisper);
-
-    oracleTap.addEventListener("click", () => {
-      statusEl.textContent = "…";
-      const whisperFirst = (Math.random() < 0.35);
-
-      if (whisperFirst){
-        openWhisper(pickRandom(WHISPERS));
-        return;
-      }
-
-      if (!EXPERIENCES.length){
-        statusEl.textContent = "No experiences configured yet.";
-        return;
-      }
-
-      openExperience(pickRandom(EXPERIENCES));
-    });
-  <!-- BlissFlip Paradigm Books signature -->
-<a
-  href="https://www.amazon.co.uk/BLISSFLIP-UNPUZZLER-PARADIGM-Bliss-that-question/dp/B0GH883KND"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="blissflip-books"
->
-  BlissFlip Paradigm Books
-</a>
-
-  </a> 
-  </script>
-</body>
-</html>
-
-
+    const statusEl = document.getElementById("status");
+    const portal = document.getElementByI
