@@ -14,33 +14,45 @@
     }
 
     html, body { height: 100%; }
+
+    /* Key mobile rule: don't lock the body; let it scroll if a device needs it */
     body{
       margin:0;
       color: var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      overflow: hidden; /* prevent the “height doubles” scroll issue */
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+
+      /* IMPORTANT: no 'fixed' background on mobile (causes jitter/zoom/black bands) */
       background:
-        radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.06), rgba(0,0,0,.55)),
-        var(--bg-img) center/cover no-repeat; /* IMPORTANT: no 'fixed' on mobile */
+        radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.06), rgba(0,0,0,.52)),
+        var(--bg-img) center/cover no-repeat;
     }
 
-    /* Lighter vignette so the image doesn't crush dark */
+    /* Lighter vignette so background doesn't crush dark */
     .vignette{
       position: fixed;
       inset: 0;
       pointer-events: none;
       background:
-        radial-gradient(900px 500px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.24) 55%, rgba(0,0,0,.48) 100%),
-        linear-gradient(to bottom, rgba(0,0,0,.10), rgba(0,0,0,.40));
+        radial-gradient(900px 500px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.22) 55%, rgba(0,0,0,.46) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,.08), rgba(0,0,0,.38));
       mix-blend-mode: multiply;
     }
 
+    /* Use SVH so address bar changes don't cause “double height” chaos */
     .wrap{
-      min-height: 100dvh;   /* dynamic viewport height fixes mobile address bar issues */
+      min-height: 100svh;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 22px 16px;
+
+      /* Respect safe areas on iPhone */
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        16px
+        calc(18px + env(safe-area-inset-bottom));
     }
 
     .stage{
@@ -48,8 +60,8 @@
       display:flex;
       flex-direction: column;
       align-items:center;
-      gap: 14px;
-      text-align: center;
+      gap: 12px;
+      text-align:center;
     }
 
     .headline{
@@ -69,60 +81,75 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.55);
     }
 
-    /* ===== Portal: mobile-proof circle (no aspect-ratio) ===== */
+    /* ===== Portal: always fits screen =====
+       Use clamp + svh so it never becomes too big in landscape.
+    */
     .portal{
-      /* size responds to BOTH width and height */
-      --size: min(520px, 86vw, 62vh);
-      width: var(--size);
-      height: var(--size);
+      width: clamp(260px, 82vw, 520px);
+      height: clamp(260px, 82vw, 520px);
       border-radius: 50%;
       position: relative;
       display:grid;
       place-items:center;
-      overflow:hidden;       /* real clipping */
-      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(0,0,0,.22));
+      overflow:hidden;
+
+      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(0,0,0,.20));
       box-shadow:
         0 20px 90px rgba(0,0,0,.50),
         inset 0 0 0 1px rgba(255,255,255,.12);
+
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Swirl as a REAL element (not ::before) so iOS clips correctly */
-    ..swirl{
-  position:absolute;
-  inset:-40%;
-  border-radius:50%;
-  background:
-    conic-gradient(from 180deg,
-      rgba(120,255,220,0.00),
-      rgba(140,220,255,0.22),
-      rgba(255,255,255,0.08),
-      rgba(120,255,220,0.14),
-      rgba(140,220,255,0.00));
-  filter: blur(8px);
-  opacity: .82;
+    /* Landscape: size by height so it never pushes content off-screen */
+    @media (orientation: landscape){
+      .portal{
+        width: clamp(220px, 48svh, 380px);
+        height: clamp(220px, 48svh, 380px);
+      }
+      .wrap{
+        padding:
+          calc(12px + env(safe-area-inset-top))
+          14px
+          calc(12px + env(safe-area-inset-bottom));
+      }
+      .stage{ gap: 10px; }
+      .sub{ font-size: 13px; }
+    }
 
-  /* iOS-friendly animation */
-  -webkit-animation: drift 7.5s linear infinite;
-  animation: drift 7.5s linear infinite;
+    /* Swirl is a real element so mobile clips it properly */
+    .swirl{
+      position:absolute;
+      inset:-40%;
+      border-radius:50%;
+      background:
+        conic-gradient(from 180deg,
+          rgba(120,255,220,0.00),
+          rgba(140,220,255,0.22),
+          rgba(255,255,255,0.08),
+          rgba(120,255,220,0.14),
+          rgba(140,220,255,0.00));
+      filter: blur(8px);
+      opacity: .82;
 
-  /* encourage GPU + continuous repaint on mobile */
-  will-change: transform;
-  transform: translateZ(0);
-  pointer-events:none;
-}
+      /* iOS/Safari: needs webkit keyframes + GPU hint to keep repainting */
+      -webkit-animation: drift 7.5s linear infinite;
+      animation: drift 7.5s linear infinite;
+      will-change: transform;
+      transform: translateZ(0);
 
-/* Add BOTH keyframes blocks for iOS Safari */
-@-webkit-keyframes drift{
-  0%   { -webkit-transform: translateZ(0) rotate(0deg) scale(1.06); }
-  100% { -webkit-transform: translateZ(0) rotate(360deg) scale(1.06); }
-}
-@keyframes drift{
-  0%   { transform: translateZ(0) rotate(0deg) scale(1.06); }
-  100% { transform: translateZ(0) rotate(360deg) scale(1.06); }
-}
+      pointer-events:none;
+    }
 
+    @-webkit-keyframes drift{
+      0%   { -webkit-transform: translateZ(0) rotate(0deg) scale(1.06); }
+      100% { -webkit-transform: translateZ(0) rotate(360deg) scale(1.06); }
+    }
+    @keyframes drift{
+      0%   { transform: translateZ(0) rotate(0deg) scale(1.06); }
+      100% { transform: translateZ(0) rotate(360deg) scale(1.06); }
+    }
 
     .ring{
       position:absolute;
@@ -146,7 +173,7 @@
         inset 0 0 80px rgba(0,0,0,.62);
       display:grid;
       place-items:center;
-      padding: 16px;
+      padding: 14px;
       z-index: 2;
     }
 
@@ -180,7 +207,7 @@
     }
 
     .hint{
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 13px;
       color: var(--muted);
       line-height: 1.45;
@@ -205,17 +232,10 @@
     }
 
     .footer{
-      margin-top: 4px;
+      margin-top: 2px;
       font-size: 12px;
       color: rgba(255,255,255,.55);
       letter-spacing: .02em;
-    }
-
-    /* Landscape tuning: shrink and reduce padding to avoid scroll/cutoff */
-    @media (orientation: landscape){
-      .wrap{ padding: 10px 12px; }
-      .portal{ --size: min(420px, 68vw, 70vh); }
-      .hint{ margin-top: 6px; }
     }
 
     /* ===== Overlays ===== */
@@ -277,10 +297,7 @@
       background:#000;
     }
     @media (orientation: landscape){
-      .bfFrame{
-        top:46px;
-        height: calc(100% - 46px);
-      }
+      .bfFrame{ top:46px; height: calc(100% - 46px); }
     }
 
     .whisperWrap{
@@ -301,6 +318,12 @@
       text-align:center;
       color: rgba(255,255,255,.92);
       text-shadow: 0 12px 40px rgba(0,0,0,.65);
+    }
+
+    /* Respect Reduce Motion (optional): if user has it on, stop animations */
+    @media (prefers-reduced-motion: reduce){
+      .swirl{ animation: none; -webkit-animation: none; }
+      .oracle .qmark{ animation: none; }
     }
   </style>
 </head>
@@ -336,9 +359,7 @@
   <div id="bfOverlay" class="bfOverlay" aria-hidden="true">
     <div class="bfBar">
       <button id="bfBack" class="bfBtn" type="button">← Return</button>
-
       <div class="bfTitle" id="bfTitle">i-Experiencer</div>
-
       <div class="bfBtns">
         <button id="bfOpen" class="bfBtn" type="button">Open Fullscreen</button>
         <button id="bfClose" class="bfBtn" type="button">✕</button>
@@ -371,7 +392,6 @@
   </div>
 
   <script>
-    // Your Bunny URLs
     const EXPERIENCES = [
       "https://iframe.mediadelivery.net/play/477963/58e76783-cdd1-45f3-aca7-5df5661f674f?1768965668074",
       "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed?1768965668074"
@@ -416,18 +436,6 @@
       statusEl.textContent = "";
     }
 
-    function closeExperienceAndWhisper(){
-      // close experience
-      bfOverlay.classList.remove("isOpen");
-      bfOverlay.setAttribute("aria-hidden","true");
-      bfFrame.src = "about:blank";
-
-      // ALWAYS whisper on return (your request)
-      setTimeout(() => {
-        openWhisper(pickRandom(WHISPERS));
-      }, 120);
-    }
-
     function openWhisper(msg){
       whisperText.textContent = msg;
       whisperOverlay.classList.add("isOpen");
@@ -441,12 +449,18 @@
       statusEl.textContent = "";
     }
 
-    // Buttons
+    // Always whisper on return from i-Experiencer
+    function closeExperienceAndWhisper(){
+      bfOverlay.classList.remove("isOpen");
+      bfOverlay.setAttribute("aria-hidden","true");
+      bfFrame.src = "about:blank";
+      setTimeout(() => openWhisper(pickRandom(WHISPERS)), 120);
+    }
+
     bfBack.addEventListener("click", closeExperienceAndWhisper);
     bfClose.addEventListener("click", closeExperienceAndWhisper);
 
-    // If the iframe is too small in landscape, this opens the SAME URL in the SAME TAB:
-    // (mobile-friendly; user can hit Back to return to BlissFlip)
+    // If iframe feels tiny in landscape, open same URL in same tab (then Back returns)
     bfOpen.addEventListener("click", () => {
       if (lastExperienceUrl) window.location.href = lastExperienceUrl;
     });
@@ -454,21 +468,11 @@
     whisperBack.addEventListener("click", closeWhisper);
     whisperClose.addEventListener("click", closeWhisper);
 
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape"){
-        closeWhisper();
-        // Close experience without whisper on ESC (keeps it from stacking unexpectedly)
-        bfOverlay.classList.remove("isOpen");
-        bfOverlay.setAttribute("aria-hidden","true");
-        bfFrame.src = "about:blank";
-      }
-    });
-
     // One tap: either whisper OR experience
     oracleTap.addEventListener("click", () => {
       statusEl.textContent = "…";
-
       const whisperFirst = (Math.random() < 0.35);
+
       if (whisperFirst){
         openWhisper(pickRandom(WHISPERS));
         return;
@@ -484,4 +488,3 @@
   </script>
 </body>
 </html>
-
