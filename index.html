@@ -89,27 +89,40 @@
     }
 
     /* Swirl as a REAL element (not ::before) so iOS clips correctly */
-    .swirl{
-      position:absolute;
-      inset:-40%;
-      border-radius:50%;
-      background:
-        conic-gradient(from 180deg,
-          rgba(120,255,220,0.00),
-          rgba(140,220,255,0.22),
-          rgba(255,255,255,0.08),
-          rgba(120,255,220,0.14),
-          rgba(140,220,255,0.00));
-      filter: blur(8px);
-      opacity: .82;
-      animation: drift 7.5s linear infinite;
-      pointer-events:none;
-    }
+    ..swirl{
+  position:absolute;
+  inset:-40%;
+  border-radius:50%;
+  background:
+    conic-gradient(from 180deg,
+      rgba(120,255,220,0.00),
+      rgba(140,220,255,0.22),
+      rgba(255,255,255,0.08),
+      rgba(120,255,220,0.14),
+      rgba(140,220,255,0.00));
+  filter: blur(8px);
+  opacity: .82;
 
-    @keyframes drift{
-      0%   { transform: rotate(0deg) scale(1.06); }
-      100% { transform: rotate(360deg) scale(1.06); }
-    }
+  /* iOS-friendly animation */
+  -webkit-animation: drift 7.5s linear infinite;
+  animation: drift 7.5s linear infinite;
+
+  /* encourage GPU + continuous repaint on mobile */
+  will-change: transform;
+  transform: translateZ(0);
+  pointer-events:none;
+}
+
+/* Add BOTH keyframes blocks for iOS Safari */
+@-webkit-keyframes drift{
+  0%   { -webkit-transform: translateZ(0) rotate(0deg) scale(1.06); }
+  100% { -webkit-transform: translateZ(0) rotate(360deg) scale(1.06); }
+}
+@keyframes drift{
+  0%   { transform: translateZ(0) rotate(0deg) scale(1.06); }
+  100% { transform: translateZ(0) rotate(360deg) scale(1.06); }
+}
+
 
     .ring{
       position:absolute;
@@ -471,3 +484,4 @@
   </script>
 </body>
 </html>
+
