@@ -15,7 +15,6 @@
 
     html, body { height: 100%; }
 
-    /* Key mobile rule: don't lock the body; let it scroll if a device needs it */
     body{
       margin:0;
       color: var(--text);
@@ -23,14 +22,11 @@
       overflow-x: hidden;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-
-      /* IMPORTANT: no 'fixed' background on mobile (causes jitter/zoom/black bands) */
       background:
         radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.06), rgba(0,0,0,.52)),
         var(--bg-img) center/cover no-repeat;
     }
 
-    /* Lighter vignette so background doesn't crush dark */
     .vignette{
       position: fixed;
       inset: 0;
@@ -41,14 +37,11 @@
       mix-blend-mode: multiply;
     }
 
-    /* Use SVH so address bar changes don't cause “double height” chaos */
     .wrap{
       min-height: 100svh;
       display:flex;
       align-items:center;
       justify-content:center;
-
-      /* Respect safe areas on iPhone */
       padding:
         calc(18px + env(safe-area-inset-top))
         16px
@@ -81,17 +74,22 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.55);
     }
 
-    /* ===== Portal: always fits screen =====
-       Use clamp + svh so it never becomes too big in landscape.
-    */
+    /* ===== Portal with HARD circular clipping (fixes iOS “lower-half square leak”) ===== */
     .portal{
       width: clamp(260px, 82vw, 520px);
       height: clamp(260px, 82vw, 520px);
-      border-radius: 50%;
       position: relative;
       display:grid;
       place-items:center;
-      overflow:hidden;
+
+      border-radius: 50%;
+      overflow: hidden;
+
+      /* Hard clip WebKit compositor surfaces */
+      -webkit-clip-path: circle(50% at 50% 50%);
+      clip-path: circle(50% at 50% 50%);
+      contain: paint;
+      isolation: isolate;
 
       background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(0,0,0,.20));
       box-shadow:
@@ -100,9 +98,9 @@
 
       user-select:none;
       -webkit-tap-highlight-color: transparent;
+      transform: translateZ(0);
     }
 
-    /* Landscape: size by height so it never pushes content off-screen */
     @media (orientation: landscape){
       .portal{
         width: clamp(220px, 48svh, 380px);
@@ -118,47 +116,33 @@
       .sub{ font-size: 13px; }
     }
 
-    /* Swirl is a real element so mobile clips it properly */
-   /* 1) Animate a SHARP swirl (no blur here) */
-.swirl{
-  position:absolute;
-  inset:-40%;
-  border-radius:50%;
-  background:
-    conic-gradient(from 180deg,
-      rgba(120,255,220,0.00),
-      rgba(140,220,255,0.22),
-      rgba(255,255,255,0.08),
-      rgba(120,255,220,0.14),
-      rgba(140,220,255,0.00));
-  opacity: .60;
+    /* Swirl (animated) */
+    .swirl{
+      position:absolute;
+      inset:-40%;
+      border-radius:50%;
 
-  -webkit-animation: drift 7.5s linear infinite;
-  animation: drift 7.5s linear infinite;
+      /* ALSO hard-clip the swirl surface */
+      -webkit-clip-path: circle(50% at 50% 50%);
+      clip-path: circle(50% at 50% 50%);
 
-  will-change: transform;
-  transform: translateZ(0);
-  pointer-events:none;
-}
+      background:
+        conic-gradient(from 180deg,
+          rgba(120,255,220,0.00),
+          rgba(140,220,255,0.22),
+          rgba(255,255,255,0.08),
+          rgba(120,255,220,0.14),
+          rgba(140,220,255,0.00));
 
-/* 2) Add a BLUR layer that stays put but blurs what's beneath */
-.portal::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  pointer-events:none;
+      filter: blur(8px);
+      opacity: .82;
 
-  /* This is the “soft glass” look without blurring an animated layer */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+      -webkit-animation: drift 7.5s linear infinite;
+      animation: drift 7.5s linear infinite;
 
-  /* A tiny glow so it still feels alive */
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.10),
-    inset 0 0 40px rgba(140,220,255,.10);
-}
-
+      will-change: transform;
+      transform: translateZ(0);
+      pointer-events:none;
     }
 
     @-webkit-keyframes drift{
@@ -168,6 +152,24 @@
     @keyframes drift{
       0%   { transform: translateZ(0) rotate(0deg) scale(1.06); }
       100% { transform: translateZ(0) rotate(360deg) scale(1.06); }
+    }
+
+    /* Soft “glass” overlay (clipped too) */
+    .portal::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:50%;
+      pointer-events:none;
+
+      /* Hard-clip overlay as well */
+      -webkit-clip-path: circle(50% at 50% 50%);
+      clip-path: circle(50% at 50% 50%);
+
+      /* gentle glow; avoids heavy darkening */
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.10),
+        inset 0 0 40px rgba(140,220,255,.10);
     }
 
     .ring{
@@ -276,7 +278,6 @@
       backdrop-filter: blur(10px);
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-
     @media (orientation: landscape){
       .bfBar{ height:46px; padding:8px 10px; }
     }
@@ -337,12 +338,6 @@
       text-align:center;
       color: rgba(255,255,255,.92);
       text-shadow: 0 12px 40px rgba(0,0,0,.65);
-    }
-
-    /* Respect Reduce Motion (optional): if user has it on, stop animations */
-    @media (prefers-reduced-motion: reduce){
-      .swirl{ animation: none; -webkit-animation: none; }
-      .oracle .qmark{ animation: none; }
     }
   </style>
 </head>
@@ -468,7 +463,6 @@
       statusEl.textContent = "";
     }
 
-    // Always whisper on return from i-Experiencer
     function closeExperienceAndWhisper(){
       bfOverlay.classList.remove("isOpen");
       bfOverlay.setAttribute("aria-hidden","true");
@@ -479,7 +473,6 @@
     bfBack.addEventListener("click", closeExperienceAndWhisper);
     bfClose.addEventListener("click", closeExperienceAndWhisper);
 
-    // If iframe feels tiny in landscape, open same URL in same tab (then Back returns)
     bfOpen.addEventListener("click", () => {
       if (lastExperienceUrl) window.location.href = lastExperienceUrl;
     });
@@ -487,7 +480,6 @@
     whisperBack.addEventListener("click", closeWhisper);
     whisperClose.addEventListener("click", closeWhisper);
 
-    // One tap: either whisper OR experience
     oracleTap.addEventListener("click", () => {
       statusEl.textContent = "…";
       const whisperFirst = (Math.random() < 0.35);
@@ -507,4 +499,3 @@
   </script>
 </body>
 </html>
-
