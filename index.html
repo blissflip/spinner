@@ -10,7 +10,7 @@
     :root{
       --bg-img: url("Copilot_20250819_075823.png");
       --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
+      --muted: rgba(255,255,255,.72);
     }
 
     html, body { height: 100%; }
@@ -18,28 +18,29 @@
       margin:0;
       color: var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      overflow-x: hidden;
+      overflow: hidden; /* prevent the “height doubles” scroll issue */
       background:
-        radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.10), rgba(0,0,0,.75)),
-        var(--bg-img) center/cover no-repeat fixed;
+        radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.06), rgba(0,0,0,.55)),
+        var(--bg-img) center/cover no-repeat; /* IMPORTANT: no 'fixed' on mobile */
     }
 
+    /* Lighter vignette so the image doesn't crush dark */
     .vignette{
       position: fixed;
       inset: 0;
       pointer-events: none;
       background:
-        radial-gradient(900px 500px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.18) 55%, rgba(0,0,0,.45) 100%),
-        linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.55));
+        radial-gradient(900px 500px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.24) 55%, rgba(0,0,0,.48) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,.10), rgba(0,0,0,.40));
       mix-blend-mode: multiply;
     }
 
     .wrap{
-      min-height: 100%;
+      min-height: 100dvh;   /* dynamic viewport height fixes mobile address bar issues */
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 28px 18px;
+      padding: 22px 16px;
     }
 
     .stage{
@@ -47,21 +48,20 @@
       display:flex;
       flex-direction: column;
       align-items:center;
-      gap: 16px;
+      gap: 14px;
+      text-align: center;
     }
 
     .headline{
-      text-align:center;
+      margin: 0;
       line-height: 1.1;
       letter-spacing: .02em;
       font-size: clamp(22px, 2.6vw, 34px);
       text-shadow: 0 10px 30px rgba(0,0,0,.55);
-      margin: 0;
     }
 
     .sub{
       margin: 0;
-      text-align:center;
       max-width: 60ch;
       color: var(--muted);
       font-size: 14px;
@@ -69,51 +69,42 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.55);
     }
 
-    /* ===== Portal (mobile-proof circle) =====
-       We DO NOT rely on aspect-ratio.
-       We force equal width + height to avoid “circle in a square” on mobile.
-    */
+    /* ===== Portal: mobile-proof circle (no aspect-ratio) ===== */
     .portal{
-      --size: min(520px, 92vw);
-      position: relative;
+      /* size responds to BOTH width and height */
+      --size: min(520px, 86vw, 62vh);
       width: var(--size);
       height: var(--size);
       border-radius: 50%;
+      position: relative;
       display:grid;
       place-items:center;
-      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(0,0,0,.55));
+      overflow:hidden;       /* real clipping */
+      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(0,0,0,.22));
       box-shadow:
-        0 20px 90px rgba(0,0,0,.55),
+        0 20px 90px rgba(0,0,0,.50),
         inset 0 0 0 1px rgba(255,255,255,.12);
-      overflow:hidden;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
-        overflow:hidden;
-  border-radius:50%;
     }
 
-  .swirl{
-  position:absolute;
-  inset:-40%;
-  border-radius:50%;
-  background:
-    conic-gradient(from 180deg,
-      rgba(120,255,220,0.00),
-      rgba(140,220,255,0.22),
-      rgba(255,255,255,0.08),
-      rgba(120,255,220,0.14),
-      rgba(140,220,255,0.00));
-  filter: blur(8px);
-  opacity:.85;
-  animation: drift 7.5s linear infinite;
-  pointer-events:none;
-
-    <section class="portal">
-  <div class="swirl"></div>
-  <div class="ring"></div>
-  <div class="core">...</div>
-</section>
-}
+    /* Swirl as a REAL element (not ::before) so iOS clips correctly */
+    .swirl{
+      position:absolute;
+      inset:-40%;
+      border-radius:50%;
+      background:
+        conic-gradient(from 180deg,
+          rgba(120,255,220,0.00),
+          rgba(140,220,255,0.22),
+          rgba(255,255,255,0.08),
+          rgba(120,255,220,0.14),
+          rgba(140,220,255,0.00));
+      filter: blur(8px);
+      opacity: .82;
+      animation: drift 7.5s linear infinite;
+      pointer-events:none;
+    }
 
     @keyframes drift{
       0%   { transform: rotate(0deg) scale(1.06); }
@@ -136,31 +127,28 @@
       width: 72%;
       height: 72%;
       border-radius: 50%;
-      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.55));
+      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.50));
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.12),
-        inset 0 0 80px rgba(0,0,0,.65);
+        inset 0 0 80px rgba(0,0,0,.62);
       display:grid;
       place-items:center;
-      text-align:center;
-      padding: 18px;
+      padding: 16px;
       z-index: 2;
     }
 
-    /* The oracle tap target (big ¿) */
     .oracle{
       appearance: none;
       border: none;
       background: transparent;
       color: rgba(255,255,255,.93);
       cursor: pointer;
-      display: grid;
-      place-items: center;
       width: 100%;
       height: 100%;
       border-radius: 50%;
+      display:grid;
+      place-items:center;
       -webkit-tap-highlight-color: transparent;
-      position: relative;
     }
 
     .oracle:focus{ outline: none; }
@@ -171,7 +159,6 @@
     .qmark{
       font-size: clamp(92px, 12vw, 140px);
       line-height: 1;
-      letter-spacing: .02em;
       text-shadow:
         0 18px 60px rgba(0,0,0,.65),
         0 0 35px rgba(140,220,255,.18);
@@ -187,7 +174,6 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.55);
     }
 
-    /* subtle “breath” pulse on the mark only (not cheesy) */
     @keyframes breathe{
       0%   { transform: translateY(-2px) scale(1.0); opacity: .92; }
       50%  { transform: translateY(-2px) scale(1.02); opacity: .98; }
@@ -200,14 +186,26 @@
     .status{
       margin: 0;
       min-height: 20px;
-      text-align:center;
       font-size: 13px;
       color: var(--muted);
-      opacity: .95;
       text-shadow: 0 10px 30px rgba(0,0,0,.55);
     }
 
-    /* ===== Overlays (mobile-safe, no popups) ===== */
+    .footer{
+      margin-top: 4px;
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+      letter-spacing: .02em;
+    }
+
+    /* Landscape tuning: shrink and reduce padding to avoid scroll/cutoff */
+    @media (orientation: landscape){
+      .wrap{ padding: 10px 12px; }
+      .portal{ --size: min(420px, 68vw, 70vh); }
+      .hint{ margin-top: 6px; }
+    }
+
+    /* ===== Overlays ===== */
     .bfOverlay{
       position: fixed;
       inset: 0;
@@ -227,13 +225,23 @@
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
 
+    @media (orientation: landscape){
+      .bfBar{ height:46px; padding:8px 10px; }
+    }
+
     .bfTitle{
       font-size:14px;
       opacity:0.85;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width:55vw;
+      max-width:40vw;
+    }
+
+    .bfBtns{
+      display:flex;
+      gap:8px;
+      align-items:center;
     }
 
     .bfBtn{
@@ -244,6 +252,7 @@
       padding:8px 10px;
       border-radius:10px;
       cursor:pointer;
+      font-size: 14px;
     }
 
     .bfFrame{
@@ -254,13 +263,22 @@
       border:0;
       background:#000;
     }
+    @media (orientation: landscape){
+      .bfFrame{
+        top:46px;
+        height: calc(100% - 46px);
+      }
+    }
 
     .whisperWrap{
       position:absolute;
       top:56px; left:0; right:0; bottom:0;
       display:grid;
       place-items:center;
-      padding:26px;
+      padding:22px;
+    }
+    @media (orientation: landscape){
+      .whisperWrap{ top:46px; }
     }
 
     .whisperText{
@@ -270,14 +288,6 @@
       text-align:center;
       color: rgba(255,255,255,.92);
       text-shadow: 0 12px 40px rgba(0,0,0,.65);
-    }
-
-    .footer{
-      margin-top: 6px;
-      font-size: 12px;
-      color: rgba(255,255,255,.55);
-      text-align:center;
-      letter-spacing: .02em;
     }
   </style>
 </head>
@@ -291,6 +301,7 @@
       <p class="sub">For a star-child, home is closer than you think.</p>
 
       <section class="portal" aria-label="BlissFlip portal">
+        <div class="swirl"></div>
         <div class="ring"></div>
 
         <div class="core">
@@ -304,7 +315,6 @@
       </section>
 
       <p id="status" class="status"></p>
-
       <div class="footer">yinyangi</div>
     </main>
   </div>
@@ -313,8 +323,13 @@
   <div id="bfOverlay" class="bfOverlay" aria-hidden="true">
     <div class="bfBar">
       <button id="bfBack" class="bfBtn" type="button">← Return</button>
+
       <div class="bfTitle" id="bfTitle">i-Experiencer</div>
-      <button id="bfClose" class="bfBtn" type="button">✕</button>
+
+      <div class="bfBtns">
+        <button id="bfOpen" class="bfBtn" type="button">Open Fullscreen</button>
+        <button id="bfClose" class="bfBtn" type="button">✕</button>
+      </div>
     </div>
 
     <iframe
@@ -333,7 +348,9 @@
     <div class="bfBar">
       <button id="whisperBack" class="bfBtn" type="button">← Return</button>
       <div class="bfTitle">Whisper</div>
-      <button id="whisperClose" class="bfBtn" type="button">✕</button>
+      <div class="bfBtns">
+        <button id="whisperClose" class="bfBtn" type="button">✕</button>
+      </div>
     </div>
     <div class="whisperWrap">
       <div id="whisperText" class="whisperText"></div>
@@ -341,14 +358,13 @@
   </div>
 
   <script>
-    // Your Bunny i-Experiencer URLs
+    // Your Bunny URLs
     const EXPERIENCES = [
       "https://iframe.mediadelivery.net/play/477963/58e76783-cdd1-45f3-aca7-5df5661f674f?1768965668074",
       "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed?1768965668074"
-      // ...add more
+      // add more...
     ];
 
-    // Whisper lines
     const WHISPERS = [
       "Breathe. The door is already open.",
       "Choose nothing. Let it arrive.",
@@ -360,86 +376,86 @@
     const oracleTap = document.getElementById("oracleTap");
     const statusEl  = document.getElementById("status");
 
-    // i-Experiencer overlay
     const bfOverlay = document.getElementById("bfOverlay");
     const bfFrame   = document.getElementById("bfFrame");
     const bfBack    = document.getElementById("bfBack");
     const bfClose   = document.getElementById("bfClose");
+    const bfOpen    = document.getElementById("bfOpen");
     const bfTitle   = document.getElementById("bfTitle");
 
-    // Whisper overlay
     const whisperOverlay = document.getElementById("whisperOverlay");
     const whisperText    = document.getElementById("whisperText");
     const whisperBack    = document.getElementById("whisperBack");
     const whisperClose   = document.getElementById("whisperClose");
 
+    let lastExperienceUrl = "";
+
     function pickRandom(arr){
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function lockScroll(){
-      document.documentElement.style.overflow = "hidden";
-      document.body.style.overflow = "hidden";
-    }
-
-    function unlockScroll(){
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow = "";
-    }
-
-    function openExperience(url, title){
-      bfTitle.textContent = title || "i-Experiencer";
+    function openExperience(url){
+      lastExperienceUrl = url;
+      bfTitle.textContent = "i-Experiencer";
       bfFrame.src = url;
       bfOverlay.classList.add("isOpen");
       bfOverlay.setAttribute("aria-hidden","false");
-      lockScroll();
+      statusEl.textContent = "";
     }
 
-    function closeExperience(){
-  bfOverlay.classList.remove("isOpen");
-  bfOverlay.setAttribute("aria-hidden","true");
-  bfFrame.src = "about:blank";
-  unlockScroll();
-  statusEl.textContent = "";
+    function closeExperienceAndWhisper(){
+      // close experience
+      bfOverlay.classList.remove("isOpen");
+      bfOverlay.setAttribute("aria-hidden","true");
+      bfFrame.src = "about:blank";
 
-  // Whisper on return (a beat after closing)
-  setTimeout(() => {
-    openWhisper(pickRandom(WHISPERS));
-  }, 120);
-}
+      // ALWAYS whisper on return (your request)
+      setTimeout(() => {
+        openWhisper(pickRandom(WHISPERS));
+      }, 120);
+    }
 
     function openWhisper(msg){
       whisperText.textContent = msg;
       whisperOverlay.classList.add("isOpen");
       whisperOverlay.setAttribute("aria-hidden","false");
-      lockScroll();
+      statusEl.textContent = "";
     }
 
     function closeWhisper(){
       whisperOverlay.classList.remove("isOpen");
       whisperOverlay.setAttribute("aria-hidden","true");
-      unlockScroll();
       statusEl.textContent = "";
     }
 
-    bfBack.addEventListener("click", closeExperience);
-    bfClose.addEventListener("click", closeExperience);
+    // Buttons
+    bfBack.addEventListener("click", closeExperienceAndWhisper);
+    bfClose.addEventListener("click", closeExperienceAndWhisper);
+
+    // If the iframe is too small in landscape, this opens the SAME URL in the SAME TAB:
+    // (mobile-friendly; user can hit Back to return to BlissFlip)
+    bfOpen.addEventListener("click", () => {
+      if (lastExperienceUrl) window.location.href = lastExperienceUrl;
+    });
+
     whisperBack.addEventListener("click", closeWhisper);
     whisperClose.addEventListener("click", closeWhisper);
 
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape"){
-        closeExperience();
         closeWhisper();
+        // Close experience without whisper on ESC (keeps it from stacking unexpectedly)
+        bfOverlay.classList.remove("isOpen");
+        bfOverlay.setAttribute("aria-hidden","true");
+        bfFrame.src = "about:blank";
       }
     });
 
-    // One-tap oracle: sometimes whisper, sometimes i-Experiencer
+    // One tap: either whisper OR experience
     oracleTap.addEventListener("click", () => {
       statusEl.textContent = "…";
 
-      const whisperFirst = (Math.random() < 0.35); // adjust ratio if you like
-
+      const whisperFirst = (Math.random() < 0.35);
       if (whisperFirst){
         openWhisper(pickRandom(WHISPERS));
         return;
@@ -450,11 +466,8 @@
         return;
       }
 
-      openExperience(pickRandom(EXPERIENCES), "i-Experiencer");
+      openExperience(pickRandom(EXPERIENCES));
     });
   </script>
 </body>
 </html>
-
-
-
