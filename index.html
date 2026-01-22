@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Spin Yourself Home</title>
+
+<style>
+  html, body { height:100%; margin:0; }
+
+  body{
+    background:
+      radial-gradient(
+        1200px 600px at 50% 45%,
+        rgba(0,0,0,.08),
+        rgba(0,0,0,.38)
+      ),
+      url("./Copilot_20250819_075823.png") center/cover no-repeat fixed;
+    font-family: Georgia, serif;
+    color: rgba(255,255,255,.92);
+    overflow:hidden;
+  }
+
+  .vignette{
+    position:fixed; inset:0;
+    background: radial-gradient(
+      900px 500px at 50% 45%,
+      rgba(0,0,0,0),
+      rgba(0,0,0,.42)
+    );
+    pointer-events:none;
+  }
+
+  .stage{
+    position:fixed; inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .stack{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    transform: translateY(-8px);
+    text-align:center;
+  }
+
+  /* PORTAL */
+  .portal{
+    width:min(420px,78vw);
+    height:min(420px,78vw);
+    max-width:420px;
+    max-height:420px;
+    border-radius:50%;
+    position:relative;
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .portal::before{
+    content:"";
+    position:absolute; inset:0;
+    border-radius:50%;
+    box-shadow:
+      0 0 0 2px rgba(255,255,255,.10),
+      0 0 38px rgba(160,220,255,.22);
+    pointer-events:none;
+  }
+
+  /* LIVING SPIRAL */
+  .spiral{
+    position:absolute;
+    inset:26px;
+    border-radius:50%;
+    background:
+      repeating-conic-gradient(
+        from 0deg,
+        rgba(255,255,255,.12) 0deg,
+        rgba(255,255,255,.03) 14deg,
+        rgba(0,0,0,0) 28deg
+      );
+    mask: radial-gradient(circle, black 55%, transparent 72%);
+    opacity:.55;
+    animation: spiralDrift 36s linear infinite;
+    mix-blend-mode: screen;
+    pointer-events:none;
+  }
+
+  @keyframes spiralDrift{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
+  }
+
+  /* DARK APERTURE */
+  .aperture{
+    position:absolute;
+    inset:42px;
+    border-radius:50%;
+    background: radial-gradient(
+      circle at 50% 46%,
+      rgba(0,0,0,.25),
+      rgba(0,0,0,.90)
+    );
+    box-shadow: inset 0 0 70px rgba(0,0,0,.75);
+    pointer-events:none;
+  }
+
+  .centerLabel{
+    position:absolute; inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    letter-spacing:.4px;
+    opacity:0;
+    transition:opacity .6s ease;
+    pointer-events:none;
+  }
+
+  .btn{
+    background:none;
+    border:1px solid rgba(255,255,255,.25);
+    color:rgba(255,255,255,.92);
+    padding:10px 20px;
+    font-size:15px;
+    cursor:pointer;
+  }
+  .btn:disabled{ opacity:.55; }
+
+  .hint{
+    font-size:14px;
+    opacity:.85;
+  }
+
+  .whisper{
+    max-width:760px;
+    font-size:18px;
+    line-height:1.65;
+    opacity:0;
+    transition:opacity .6s ease;
+    padding:0 18px;
+    text-shadow:0 1px 0 rgba(0,0,0,.35);
+  }
+</style>
+</head>
+
+<body>
+<div class="stage">
+  <div class="stack">
+
+    <div class="portal" id="portal">
+      <div class="spiral" id="spiral"></div>
+      <div class="aperture"></div>
+      <div class="centerLabel" id="centerLabel"></div>
+    </div>
+
+    <button class="btn" id="spinBtn">Spin Yourself Home</button>
+    <div class="hint" id="hint">
+      After it settles, click the circle to open the experience.
+    </div>
+
+    <div class="whisper" id="whisper"></div>
+  </div>
+</div>
+
+<div class="vignette"></div>
+
+<script>
+const segments = [
+  {name:"Ignition", url:"https://iframe.mediadelivery.net/play/477963/58e76783-cdd1-45f3-aca7-5df5661f674f", whisper:"Awareness was already moving.\nYou just saw it."},
+  {name:"The Unseen", url:"https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed", whisper:"Even the invisible belongs.\nWhat holds you doesn’t announce itself."},
+  {name:"Holding Pattern", url:"https://iframe.mediadelivery.net/play/478159/c8f20447-7b5d-4894-a9b1-74b81fbeee68", whisper:"Nothing here is rushed.\nTime holds what is becoming."},
+  {name:"Long Reach", url:"https://iframe.mediadelivery.net/play/478159/bab3edcb-8381-46e2-b615-88720237acf5", whisper:"What is immense is also intimate."},
+  {name:"No Empty Space", url:"https://iframe.mediadelivery.net/play/478159/4bbf7086-2926-445f-a53b-ef152d70c90a", whisper:"Emptiness was a misread.\nEvery fragment belongs."},
+  {name:"Turning", url:"https://iframe.mediadelivery.net/play/478159/51017476-437d-4e74-b636-953ad16f1fb6", whisper:"Balance is found in turning."},
+  {name:"Arrival", url:"https://iframe.mediadelivery.net/play/478159/668f88fb-e9c2-4b8d-be1e-ae81364ffab6", whisper:"We belong to the wider sky."},
+  {name:"After the End", url:"https://iframe.mediadelivery.net/play/478159/0cc850a0-f02e-4d52-9c44-8b9981f4cd51", whisper:"Endings redistribute."},
+  {name:"When Paths Meet", url:"https://iframe.mediadelivery.net/play/478159/318be683-c664-41e6-8e0c-608bf3c68e5a", whisper:"Touch reshapes destiny."},
+  {name:"What Organizes", url:"https://iframe.mediadelivery.net/play/478159/757ad818-9626-4f0c-84ef-1aff6fcba5ad", whisper:"True power gathers."}
+];
+
+const portal = document.getElementById("portal");
+const spiral = document.getElementById("spiral");
+const spinBtn = document.getElementById("spinBtn");
+const hint = document.getElementById("hint");
+const centerLabel = document.getElementById("centerLabel");
+const whisperEl = document.getElementById("whisper");
+
+let selected = null;
+let canOpen = false;
+let opened = false;
+
+function spin(){
+  if (spinBtn.disabled) return;
+
+  spinBtn.disabled = true;
+  canOpen = false;
+  opened = false;
+  whisperEl.style.opacity = 0;
+  centerLabel.style.opacity = 0;
+  hint.textContent = "Turning…";
+
+  selected = segments[Math.floor(Math.random()*segments.length)];
+
+  spiral.style.animationDuration = "6s";
+
+  setTimeout(() => {
+    spiral.style.animationDuration = "36s";
+    centerLabel.textContent = selected.name;
+    centerLabel.style.opacity = 0.85;
+    canOpen = true;
+    hint.textContent = "It’s chosen. Touch the circle to enter.";
+
+    setTimeout(() => {
+      if (canOpen && !opened) openExperience();
+    }, 1400);
+
+    spinBtn.disabled = false;
+  }, 2600);
+}
+
+function openExperience(){
+  if (!canOpen || opened) return;
+  opened = true;
+  window.open(selected.url, "_blank");
+  hint.textContent = "Return here when you’re done.";
+}
+
+spinBtn.addEventListener("click", spin);
+portal.addEventListener("click", openExperience);
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && opened){
+    whisperEl.innerHTML = selected.whisper.replace(/\n/g,"<br>");
+    whisperEl.style.opacity = 1;
+    hint.textContent = "Spin again whenever you’re ready.";
+  }
+});
+</script>
+</body>
+</html>
