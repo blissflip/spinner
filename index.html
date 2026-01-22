@@ -396,12 +396,17 @@
     }
 
     function closeExperience(){
-      bfOverlay.classList.remove("isOpen");
-      bfOverlay.setAttribute("aria-hidden","true");
-      bfFrame.src = "about:blank";
-      unlockScroll();
-      statusEl.textContent = "";
-    }
+  bfOverlay.classList.remove("isOpen");
+  bfOverlay.setAttribute("aria-hidden","true");
+  bfFrame.src = "about:blank";
+  unlockScroll();
+  statusEl.textContent = "";
+
+  // Whisper on return (a beat after closing)
+  setTimeout(() => {
+    openWhisper(pickRandom(WHISPERS));
+  }, 120);
+}
 
     function openWhisper(msg){
       whisperText.textContent = msg;
@@ -450,5 +455,6 @@
   </script>
 </body>
 </html>
+
 
 
