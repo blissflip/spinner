@@ -1,243 +1,397 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Spin Yourself Home</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <title>BlissFlip ¿</title>
 
-<style>
-  html, body { height:100%; margin:0; }
+  <style>
+    :root{
+      --bg-img: url("Copilot_20250819_075823.png"); /* <-- your background image in same folder */
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --thin: rgba(255,255,255,.18);
+      --ring: rgba(140,220,255,.28);
+      --ring2: rgba(120,255,220,.18);
+      --glass: rgba(0,0,0,.35);
+      --glass2: rgba(0,0,0,.55);
+    }
 
-  body{
-    background:
-      radial-gradient(
-        1200px 600px at 50% 45%,
-        rgba(0,0,0,.08),
-        rgba(0,0,0,.38)
-      ),
-      url("./Copilot_20250819_075823.png") center/cover no-repeat fixed;
-    font-family: Georgia, serif;
-    color: rgba(255,255,255,.92);
-    overflow:hidden;
-  }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      overflow-x: hidden;
+      background:
+        radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.10), rgba(0,0,0,.75)),
+        var(--bg-img) center/cover no-repeat fixed;
+    }
 
-  .vignette{
-    position:fixed; inset:0;
-    background: radial-gradient(
-      900px 500px at 50% 45%,
-      rgba(0,0,0,0),
-      rgba(0,0,0,.42)
-    );
-    pointer-events:none;
-  }
+    /* Soft vignette for cinematic depth */
+    .vignette{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(900px 500px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.38) 55%, rgba(0,0,0,.70) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.55));
+      mix-blend-mode: multiply;
+    }
 
-  .stage{
-    position:fixed; inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
+    .wrap{
+      min-height: 100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 28px 18px;
+    }
 
-  .stack{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:18px;
-    transform: translateY(-8px);
-    text-align:center;
-  }
+    .stage{
+      width: min(980px, 100%);
+      display:flex;
+      flex-direction: column;
+      align-items:center;
+      gap: 18px;
+    }
 
-  /* PORTAL */
-  .portal{
-    width:min(420px,78vw);
-    height:min(420px,78vw);
-    max-width:420px;
-    max-height:420px;
-    border-radius:50%;
-    position:relative;
-    cursor:pointer;
-    user-select:none;
-  }
+    .headline{
+      text-align:center;
+      line-height: 1.1;
+      letter-spacing: .02em;
+      font-size: clamp(22px, 2.6vw, 34px);
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+      margin: 0;
+    }
 
-  .portal::before{
-    content:"";
-    position:absolute; inset:0;
-    border-radius:50%;
-    box-shadow:
-      0 0 0 2px rgba(255,255,255,.10),
-      0 0 38px rgba(160,220,255,.22);
-    pointer-events:none;
-  }
+    .sub{
+      margin: 0;
+      text-align:center;
+      max-width: 56ch;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+    }
 
-  /* LIVING SPIRAL */
-  .spiral{
-    position:absolute;
-    inset:26px;
-    border-radius:50%;
-    background:
-      repeating-conic-gradient(
-        from 0deg,
-        rgba(255,255,255,.12) 0deg,
-        rgba(255,255,255,.03) 14deg,
-        rgba(0,0,0,0) 28deg
-      );
-    mask: radial-gradient(circle, black 55%, transparent 72%);
-    opacity:.55;
-    animation: spiralDrift 36s linear infinite;
-    mix-blend-mode: screen;
-    pointer-events:none;
-  }
+    /* Portal */
+    .portal{
+      position: relative;
+      width: min(520px, 92vw);
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      display:grid;
+      place-items:center;
+      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.35));
+      box-shadow:
+        0 20px 90px rgba(0,0,0,.55),
+        inset 0 0 0 1px rgba(255,255,255,.12);
+      overflow:hidden;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-  @keyframes spiralDrift{
-    from{ transform:rotate(0deg); }
-    to{ transform:rotate(360deg); }
-  }
+    /* shimmer layer */
+    .portal::before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background:
+        conic-gradient(from 180deg,
+          rgba(120,255,220,0.00),
+          rgba(140,220,255,0.22),
+          rgba(255,255,255,0.08),
+          rgba(120,255,220,0.14),
+          rgba(140,220,255,0.00));
+      filter: blur(8px);
+      opacity: .9;
+      animation: drift 7.5s linear infinite;
+      transform-origin: center;
+    }
 
-  /* DARK APERTURE */
-  .aperture{
-    position:absolute;
-    inset:42px;
-    border-radius:50%;
-    background: radial-gradient(
-      circle at 50% 46%,
-      rgba(0,0,0,.25),
-      rgba(0,0,0,.90)
-    );
-    box-shadow: inset 0 0 70px rgba(0,0,0,.75);
-    pointer-events:none;
-  }
+    /* subtle grain */
+    .portal::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size: 4px 4px;
+      opacity:.05;
+      mix-blend-mode: overlay;
+      pointer-events:none;
+    }
 
-  .centerLabel{
-    position:absolute; inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:18px;
-    letter-spacing:.4px;
-    opacity:0;
-    transition:opacity .6s ease;
-    pointer-events:none;
-  }
+    @keyframes drift{
+      0%   { transform: rotate(0deg) scale(1.06); }
+      100% { transform: rotate(360deg) scale(1.06); }
+    }
 
-  .btn{
-    background:none;
-    border:1px solid rgba(255,255,255,.25);
-    color:rgba(255,255,255,.92);
-    padding:10px 20px;
-    font-size:15px;
-    cursor:pointer;
-  }
-  .btn:disabled{ opacity:.55; }
+    .ring{
+      position:absolute;
+      inset: 14px;
+      border-radius: 999px;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.14),
+        inset 0 0 45px rgba(140,220,255,.14),
+        0 0 55px rgba(120,255,220,.10);
+      pointer-events:none;
+    }
 
-  .hint{
-    font-size:14px;
-    opacity:.85;
-  }
+    .core{
+      position: relative;
+      width: 72%;
+      height: 72%;
+      border-radius: 999px;
+      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.55));
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.12),
+        inset 0 0 80px rgba(0,0,0,.65);
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding: 18px;
+      z-index: 2;
+    }
 
-  .whisper{
-    max-width:760px;
-    font-size:18px;
-    line-height:1.65;
-    opacity:0;
-    transition:opacity .6s ease;
-    padding:0 18px;
-    text-shadow:0 1px 0 rgba(0,0,0,.35);
-  }
-</style>
+    .mark{
+      font-size: clamp(20px, 2.2vw, 26px);
+      letter-spacing: .06em;
+      opacity: .92;
+      margin: 0 0 10px 0;
+    }
+
+    .micro{
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* Button */
+    .btnRow{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.20);
+      background: rgba(0,0,0,.35);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 15px;
+      letter-spacing: .02em;
+      box-shadow:
+        0 18px 55px rgba(0,0,0,.35),
+        inset 0 0 0 1px rgba(255,255,255,.06);
+      cursor:pointer;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      backdrop-filter: blur(8px);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active{ transform: translateY(1px) scale(.995); }
+    .btn:hover{ background: rgba(0,0,0,.45); border-color: rgba(255,255,255,.28); }
+
+    .status{
+      margin: 0;
+      min-height: 20px;
+      text-align:center;
+      font-size: 13px;
+      color: var(--muted);
+      opacity: .95;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+    }
+
+    /* ---------- Mobile-safe overlay (no popups) ---------- */
+    .bfOverlay{
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 99999;
+      background: rgba(0,0,0,0.92);
+    }
+    .bfOverlay.isOpen{ display:block; }
+
+    .bfBar{
+      position:absolute; top:0; left:0; right:0;
+      height:56px;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 12px; gap:10px;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    .bfTitle{
+      font-size:14px;
+      opacity:0.85;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:55vw;
+    }
+
+    .bfBtn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.92);
+      padding:8px 10px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
+    .bfFrame{
+      position:absolute;
+      top:56px; left:0; right:0; bottom:0;
+      width:100%;
+      height:calc(100% - 56px);
+      border:0;
+      background:#000;
+    }
+
+    /* Footer mark */
+    .footer{
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+      text-align:center;
+      letter-spacing: .02em;
+    }
+  </style>
 </head>
 
 <body>
-<div class="stage">
-  <div class="stack">
+  <div class="vignette"></div>
 
-    <div class="portal" id="portal">
-      <div class="spiral" id="spiral"></div>
-      <div class="aperture"></div>
-      <div class="centerLabel" id="centerLabel"></div>
-    </div>
+  <div class="wrap">
+    <main class="stage">
+      <h1 class="headline">BlissFlip ¿</h1>
+      <p class="sub">For a star-child, home is closer than you think.</p>
 
-    <button class="btn" id="spinBtn">Spin Yourself Home</button>
-    <div class="hint" id="hint">
-      After it settles, click the circle to open the experience.
-    </div>
+      <section class="portal" aria-label="BlissFlip portal">
+        <div class="ring"></div>
+        <div class="core">
+          <p class="mark">¿</p>
+          <p class="micro">
+            If you are here, you are here for a reason.<br/>
+            Tap once. Let the moment choose.
+          </p>
+        </div>
+      </section>
 
-    <div class="whisper" id="whisper"></div>
+      <div class="btnRow">
+        <button id="spinBtn" class="btn" type="button">Spin Yourself Home</button>
+      </div>
+
+      <p id="status" class="status"></p>
+
+      <div class="footer">yinyangi</div>
+    </main>
   </div>
-</div>
 
-<div class="vignette"></div>
+  <!-- In-page Experience Overlay (mobile-safe, no popups) -->
+  <div id="bfOverlay" class="bfOverlay" aria-hidden="true">
+    <div class="bfBar">
+      <button id="bfBack" class="bfBtn" type="button">← Return</button>
+      <div class="bfTitle" id="bfTitle">i-Experiencer</div>
+      <button id="bfClose" class="bfBtn" type="button">✕</button>
+    </div>
 
-<script>
-const segments = [
-  {name:"Ignition", url:"https://iframe.mediadelivery.net/play/477963/58e76783-cdd1-45f3-aca7-5df5661f674f", whisper:"Awareness was already moving.\nYou just saw it."},
-  {name:"The Unseen", url:"https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed", whisper:"Even the invisible belongs.\nWhat holds you doesn’t announce itself."},
-  {name:"Holding Pattern", url:"https://iframe.mediadelivery.net/play/478159/c8f20447-7b5d-4894-a9b1-74b81fbeee68", whisper:"Nothing here is rushed.\nTime holds what is becoming."},
-  {name:"Long Reach", url:"https://iframe.mediadelivery.net/play/478159/bab3edcb-8381-46e2-b615-88720237acf5", whisper:"What is immense is also intimate."},
-  {name:"No Empty Space", url:"https://iframe.mediadelivery.net/play/478159/4bbf7086-2926-445f-a53b-ef152d70c90a", whisper:"Emptiness was a misread.\nEvery fragment belongs."},
-  {name:"Turning", url:"https://iframe.mediadelivery.net/play/478159/51017476-437d-4e74-b636-953ad16f1fb6", whisper:"Balance is found in turning."},
-  {name:"Arrival", url:"https://iframe.mediadelivery.net/play/478159/668f88fb-e9c2-4b8d-be1e-ae81364ffab6", whisper:"We belong to the wider sky."},
-  {name:"After the End", url:"https://iframe.mediadelivery.net/play/478159/0cc850a0-f02e-4d52-9c44-8b9981f4cd51", whisper:"Endings redistribute."},
-  {name:"When Paths Meet", url:"https://iframe.mediadelivery.net/play/478159/318be683-c664-41e6-8e0c-608bf3c68e5a", whisper:"Touch reshapes destiny."},
-  {name:"What Organizes", url:"https://iframe.mediadelivery.net/play/478159/757ad818-9626-4f0c-84ef-1aff6fcba5ad", whisper:"True power gathers."}
-];
+    <iframe
+      id="bfFrame"
+      class="bfFrame"
+      src="about:blank"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+      loading="eager"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </div>
 
-const portal = document.getElementById("portal");
-const spiral = document.getElementById("spiral");
-const spinBtn = document.getElementById("spinBtn");
-const hint = document.getElementById("hint");
-const centerLabel = document.getElementById("centerLabel");
-const whisperEl = document.getElementById("whisper");
+  <script>
+    // 1) Put your real i-Experiencer URLs here.
+    // These should be direct experience pages you want to open.
+    // If an experience refuses to load in an iframe (blank screen),
+    // it means that host blocks embedding; tell me and we’ll use a same-tab fallback.
+    const EXPERIENCES = [
+      "https://example.com/iexperiencer-01",
+      "https://example.com/iexperiencer-02",
+      "https://example.com/iexperiencer-03"
+      // ...add more
+    ];
 
-let selected = null;
-let canOpen = false;
-let opened = false;
+    // Optional titles (same length as EXPERIENCES). If omitted, "i-Experiencer" is used.
+    const EXPERIENCE_TITLES = [
+      "i-Experiencer",
+      "i-Experiencer",
+      "i-Experiencer"
+    ];
 
-function spin(){
-  if (spinBtn.disabled) return;
+    const spinBtn   = document.getElementById("spinBtn");
+    const statusEl  = document.getElementById("status");
 
-  spinBtn.disabled = true;
-  canOpen = false;
-  opened = false;
-  whisperEl.style.opacity = 0;
-  centerLabel.style.opacity = 0;
-  hint.textContent = "Turning…";
+    const bfOverlay = document.getElementById("bfOverlay");
+    const bfFrame   = document.getElementById("bfFrame");
+    const bfBack    = document.getElementById("bfBack");
+    const bfClose   = document.getElementById("bfClose");
+    const bfTitle   = document.getElementById("bfTitle");
 
-  selected = segments[Math.floor(Math.random()*segments.length)];
+    function pickRandomIndex(n){
+      return Math.floor(Math.random() * n);
+    }
 
-  spiral.style.animationDuration = "6s";
+    function openBlissFlipExperience(url, title){
+      bfTitle.textContent = title || "i-Experiencer";
+      bfFrame.src = url;
+      bfOverlay.classList.add("isOpen");
+      bfOverlay.setAttribute("aria-hidden","false");
+      // prevent background scroll on mobile
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    }
 
-  setTimeout(() => {
-    spiral.style.animationDuration = "36s";
-    centerLabel.textContent = selected.name;
-    centerLabel.style.opacity = 0.85;
-    canOpen = true;
-    hint.textContent = "It’s chosen. Touch the circle to enter.";
+    function closeBlissFlipExperience(){
+      bfOverlay.classList.remove("isOpen");
+      bfOverlay.setAttribute("aria-hidden","true");
+      bfFrame.src = "about:blank";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      statusEl.textContent = "";
+    }
 
-    setTimeout(() => {
-      if (canOpen && !opened) openExperience();
-    }, 1400);
+    bfBack.addEventListener("click", closeBlissFlipExperience);
+    bfClose.addEventListener("click", closeBlissFlipExperience);
 
-    spinBtn.disabled = false;
-  }, 2600);
-}
+    // ESC closes overlay (desktop)
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeBlissFlipExperience();
+    });
 
-function openExperience(){
-  if (!canOpen || opened) return;
-  opened = true;
-  window.open(selected.url, "_blank");
-  hint.textContent = "Return here when you’re done.";
-}
+    // The one-button oracle:
+    spinBtn.addEventListener("click", () => {
+      if (!Array.isArray(EXPERIENCES) || EXPERIENCES.length === 0){
+        statusEl.textContent = "No experiences configured yet.";
+        return;
+      }
 
-spinBtn.addEventListener("click", spin);
-portal.addEventListener("click", openExperience);
+      // Tiny moment of ceremony
+      statusEl.textContent = "…";
 
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && opened){
-    whisperEl.innerHTML = selected.whisper.replace(/\n/g,"<br>");
-    whisperEl.style.opacity = 1;
-    hint.textContent = "Spin again whenever you’re ready.";
-  }
-});
-</script>
+      const i = pickRandomIndex(EXPERIENCES.length);
+      const url = EXPERIENCES[i];
+      const title = (EXPERIENCE_TITLES && EXPERIENCE_TITLES[i]) ? EXPERIENCE_TITLES[i] : "i-Experiencer";
+
+      // Open IN-PAGE (mobile safe)
+      openBlissFlipExperience(url, title);
+    });
+  </script>
 </body>
 </html>
