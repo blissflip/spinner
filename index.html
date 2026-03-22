@@ -21,20 +21,9 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       overflow-x: hidden;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
       background:
         radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.06), rgba(0,0,0,.52)),
         var(--bg-img) center/cover no-repeat;
-    }
-
-    .vignette{
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(900px 500px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,.22) 55%, rgba(0,0,0,.46) 100%),
-        linear-gradient(to bottom, rgba(0,0,0,.08), rgba(0,0,0,.38));
-      mix-blend-mode: multiply;
     }
 
     .wrap{
@@ -42,214 +31,39 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:
-        calc(18px + env(safe-area-inset-top))
-        16px
-        calc(18px + env(safe-area-inset-bottom));
+      padding:20px;
     }
 
     .stage{
-      width: min(980px, 100%);
-      display:flex;
-      flex-direction: column;
-      align-items:center;
-      gap: 12px;
       text-align:center;
+      max-width: 900px;
+      width:100%;
     }
 
     .headline{
-      margin: 0;
-      line-height: 1.1;
-      letter-spacing: .02em;
-      font-size: clamp(22px, 2.6vw, 34px);
-      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+      font-size:28px;
+      margin-bottom:10px;
     }
 
     .sub{
-      margin: 0;
-      max-width: 60ch;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+      font-size:14px;
+      color:var(--muted);
+      margin-bottom:20px;
     }
 
     .portal{
-      width: clamp(260px, 82vw, 520px);
-      height: clamp(260px, 82vw, 520px);
-      position: relative;
-      display:grid;
-      place-items:center;
-
-      border-radius: 50%;
-      overflow: hidden;
-
-      -webkit-clip-path: circle(50% at 50% 50%);
-      clip-path: circle(50% at 50% 50%);
-      contain: paint;
-      isolation: isolate;
-
-      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.14), rgba(0,0,0,.20));
-      box-shadow:
-        0 20px 90px rgba(0,0,0,.50),
-        inset 0 0 0 1px rgba(255,255,255,.12);
-
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      transform: translateZ(0);
-    }
-
-    @media (orientation: landscape){
-      .portal{
-        width: clamp(220px, 48svh, 380px);
-        height: clamp(220px, 48svh, 380px);
-      }
-      .wrap{
-        padding:
-          calc(12px + env(safe-area-inset-top))
-          14px
-          calc(12px + env(safe-area-inset-bottom));
-      }
-      .stage{ gap: 10px; }
-      .sub{ font-size: 13px; }
-    }
-
-    .swirl{
-      position:absolute;
-      inset:-40%;
+      width:300px;
+      height:300px;
+      margin:auto;
       border-radius:50%;
-
-      -webkit-clip-path: circle(50% at 50% 50%);
-      clip-path: circle(50% at 50% 50%);
-
-      background:
-        conic-gradient(from 180deg,
-          rgba(120,255,220,0.00),
-          rgba(140,220,255,0.22),
-          rgba(255,255,255,0.08),
-          rgba(120,255,220,0.14),
-          rgba(140,220,255,0.00));
-
-      filter: blur(8px);
-      opacity: .82;
-
-      -webkit-animation: drift 7.5s linear infinite;
-      animation: drift 7.5s linear infinite;
-
-      will-change: transform;
-      transform: translateZ(0);
-      pointer-events:none;
-    }
-
-    @-webkit-keyframes drift{
-      0%   { -webkit-transform: translateZ(0) rotate(0deg) scale(1.06); }
-      100% { -webkit-transform: translateZ(0) rotate(360deg) scale(1.06); }
-    }
-    @keyframes drift{
-      0%   { transform: translateZ(0) rotate(0deg) scale(1.06); }
-      100% { transform: translateZ(0) rotate(360deg) scale(1.06); }
-    }
-
-    .portal::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:50%;
-      pointer-events:none;
-
-      -webkit-clip-path: circle(50% at 50% 50%);
-      clip-path: circle(50% at 50% 50%);
-
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.10),
-        inset 0 0 40px rgba(140,220,255,.10);
-    }
-
-    .ring{
-      position:absolute;
-      inset: 14px;
-      border-radius: 50%;
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.14),
-        inset 0 0 45px rgba(140,220,255,.14),
-        0 0 55px rgba(120,255,220,.10);
-      pointer-events:none;
-    }
-
-    .core{
-      position: relative;
-      width: 72%;
-      height: 72%;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.10), rgba(0,0,0,.50));
-      box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.12),
-        inset 0 0 80px rgba(0,0,0,.62);
       display:grid;
       place-items:center;
-      padding: 14px;
-      z-index: 2;
-    }
-
-    .oracle{
-      appearance: none;
-      border: none;
-      background: transparent;
-      color: rgba(255,255,255,.93);
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      display:grid;
-      place-items:center;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .oracle:focus{ outline: none; }
-    .oracle:focus-visible{
-      box-shadow: 0 0 0 3px rgba(255,255,255,.18), 0 0 0 10px rgba(140,220,255,.10);
+      background: radial-gradient(circle, rgba(255,255,255,.1), rgba(0,0,0,.4));
+      cursor:pointer;
     }
 
     .qmark{
-      font-size: clamp(92px, 12vw, 140px);
-      line-height: 1;
-      text-shadow:
-        0 18px 60px rgba(0,0,0,.65),
-        0 0 35px rgba(140,220,255,.18);
-      transform: translateY(-2px);
-      opacity: .96;
-    }
-
-    .hint{
-      margin-top: 8px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.45;
-      text-shadow: 0 10px 30px rgba(0,0,0,.55);
-    }
-
-    @keyframes breathe{
-      0%   { transform: translateY(-2px) scale(1.0); opacity: .92; }
-      50%  { transform: translateY(-2px) scale(1.02); opacity: .98; }
-      100% { transform: translateY(-2px) scale(1.0); opacity: .92; }
-    }
-    .oracle:not(:active) .qmark{
-      animation: breathe 4.6s ease-in-out infinite;
-    }
-
-    .status{
-      margin: 0;
-      min-height: 20px;
-      font-size: 13px;
-      color: var(--muted);
-      text-shadow: 0 10px 30px rgba(0,0,0,.55);
-    }
-
-    .footer{
-      margin-top: 2px;
-      font-size: 12px;
-      color: rgba(255,255,255,.55);
-      letter-spacing: .02em;
+      font-size:120px;
     }
 
     .bfOverlay{
@@ -257,256 +71,131 @@
       inset: 0;
       display: none;
       z-index: 99999;
-      background: rgba(0,0,0,0.92);
+      background: rgba(0,0,0,0.95);
     }
+
     .bfOverlay.isOpen{ display:block; }
 
-    .bfBar{
-      position:absolute; top:0; left:0; right:0;
-      height:56px;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:10px 12px; gap:10px;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    @media (orientation: landscape){
-      .bfBar{ height:46px; padding:8px 10px; }
-    }
-
-    .bfTitle{
-      font-size:14px;
-      opacity:0.85;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width:40vw;
-    }
-
-    .bfBtns{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-
-    .bfBtn{
-      appearance:none;
-      border:1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.92);
-      padding:8px 10px;
-      border-radius:10px;
-      cursor:pointer;
-      font-size: 14px;
-    }
-
     .bfFrame{
-      position:absolute;
-      top:56px; left:0; right:0; bottom:0;
       width:100%;
-      height:calc(100% - 56px);
+      height:100%;
       border:0;
-      background:#000;
-    }
-    @media (orientation: landscape){
-      .bfFrame{ top:46px; height: calc(100% - 46px); }
-    }
-
-    .whisperWrap{
-      position:absolute;
-      top:56px; left:0; right:0; bottom:0;
-      display:grid;
-      place-items:center;
-      padding:22px;
-    }
-    @media (orientation: landscape){
-      .whisperWrap{ top:46px; }
     }
 
     .whisperText{
-      max-width:65ch;
-      font-size: clamp(18px, 2.2vw, 26px);
-      line-height:1.55;
+      color:white;
+      font-size:22px;
       text-align:center;
-      color: rgba(255,255,255,.92);
-      text-shadow: 0 12px 40px rgba(0,0,0,.65);
+      padding:40px;
       white-space: pre-line;
     }
+
   </style>
 </head>
 
 <body>
-  <div class="vignette"></div>
 
-  <div class="wrap">
-    <main class="stage">
-      <h1 class="headline">BlissFlip ¿</h1>
-      <p class="sub">For a star-child, home is closer than you think.</p>
+<div class="wrap">
+  <div class="stage">
+    <div class="headline">BlissFlip ¿</div>
+    <div class="sub">Tap once. Let the moment choose.</div>
 
-      <section class="portal" aria-label="BlissFlip portal">
-        <div class="swirl"></div>
-        <div class="ring"></div>
-
-        <div class="core">
-          <button id="oracleTap" class="oracle" type="button" aria-label="BlissFlip oracle">
-            <div>
-              <div class="qmark">¿</div>
-              <div class="hint">Tap once. Let the moment choose.</div>
-            </div>
-          </button>
-        </div>
-      </section>
-
-      <p id="status" class="status"></p>
-      <div class="footer">yinyangi</div>
-    </main>
-  </div>
-
-  <div id="bfOverlay" class="bfOverlay" aria-hidden="true">
-    <div class="bfBar">
-      <button id="bfBack" class="bfBtn" type="button">← Return</button>
-      <div class="bfTitle" id="bfTitle">i-Experiencer</div>
-      <div class="bfBtns">
-        <button id="bfOpen" class="bfBtn" type="button">Open Fullscreen</button>
-        <button id="bfClose" class="bfBtn" type="button">✕</button>
-      </div>
-    </div>
-
-    <iframe
-      id="bfFrame"
-      class="bfFrame"
-      src="about:blank"
-      allow="autoplay; fullscreen; picture-in-picture"
-      allowfullscreen
-      loading="eager"
-      referrerpolicy="no-referrer-when-downgrade"
-    ></iframe>
-  </div>
-
-  <div id="whisperOverlay" class="bfOverlay" aria-hidden="true">
-    <div class="bfBar">
-      <button id="whisperBack" class="bfBtn" type="button">← Return</button>
-      <div class="bfTitle">Whisper</div>
-      <div class="bfBtns">
-        <button id="whisperClose" class="bfBtn" type="button">✕</button>
-      </div>
-    </div>
-    <div class="whisperWrap">
-      <div id="whisperText" class="whisperText"></div>
+    <div id="oracleTap" class="portal">
+      <div class="qmark">¿</div>
     </div>
   </div>
+</div>
 
-  <script>
-    const EXPERIENCES = [
-      "https://iframe.mediadelivery.net/play/477963/58e76783-cdd1-45f3-aca7-5df5661f674f?1768965668074",
-      "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed?1768965668074"
-      // add more...
-    ];
+<!-- Experience -->
+<div id="bfOverlay" class="bfOverlay">
+  <iframe id="bfFrame" class="bfFrame"></iframe>
+</div>
 
-    const WHISPERS = [
-      "What doesn’t fade\nwas never held by the body.",
-      "Maybe we are already building it—\nin the way we choose to love.",
-      "The tighter the grip,\nthe more slips through.",
-      "That space you’re holding\nis already more than enough.",
-      "It isn’t control\nthe moment you see it.",
-      "Sometimes the quiet way we care\nis the whole world, in motion.",
-      "You were never meant\nto fix everything.",
-      "Nothing missing.\nNothing required.",
-      "Nothing to figure out.\nJust notice."
-    ];
+<!-- Whisper -->
+<div id="whisperOverlay" class="bfOverlay">
+  <div id="whisperText" class="whisperText"></div>
+</div>
 
-    const oracleTap = document.getElementById("oracleTap");
-    const statusEl  = document.getElementById("status");
+<script>
 
-    const bfOverlay = document.getElementById("bfOverlay");
-    const bfFrame   = document.getElementById("bfFrame");
-    const bfBack    = document.getElementById("bfBack");
-    const bfClose   = document.getElementById("bfClose");
-    const bfOpen    = document.getElementById("bfOpen");
-    const bfTitle   = document.getElementById("bfTitle");
+const EXPERIENCES = [
+  "https://iframe.mediadelivery.net/play/478159/39decb6a-b113-47c4-ab57-fb0085381f0b",
+  "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed",
+  "https://iframe.mediadelivery.net/play/478159/757ad818-9626-4f0c-84ef-1aff6fcba5ad",
+  "https://iframe.mediadelivery.net/play/478159/4143f333-ae29-41e8-81ea-e845a14aba95",
+  "https://iframe.mediadelivery.net/play/478159/318be683-c664-41e6-8e0c-608bf3c68e5a",
+  "https://iframe.mediadelivery.net/play/478159/5cbf9987-aa77-4ca3-a7c2-e4d2aaa50248"
+];
 
-    const whisperOverlay = document.getElementById("whisperOverlay");
-    const whisperText    = document.getElementById("whisperText");
-    const whisperBack    = document.getElementById("whisperBack");
-    const whisperClose   = document.getElementById("whisperClose");
+const WHISPERS = [
+  "What doesn’t fade\nwas never held by the body.",
+  "Maybe we are already building it—\nin the way we choose to love.",
+  "The tighter the grip,\nthe more slips through.",
+  "That space you’re holding\nis already more than enough.",
+  "Nothing missing.\nNothing required.",
+  "You were never meant\nto fix everything."
+];
 
-    let lastExperienceUrl = "";
-    let lastExperienceIndex = -1;
-    let lastWhisperIndex = -1;
+let lastExperienceIndex = -1;
+let lastWhisperIndex = -1;
 
-    function pickRandom(arr, type){
-      let index;
+function pickRandom(arr, type){
+  let index;
 
-      if (type === "experience"){
-        do {
-          index = Math.floor(Math.random() * arr.length);
-        } while (index === lastExperienceIndex && arr.length > 1);
-        lastExperienceIndex = index;
-      } else {
-        do {
-          index = Math.floor(Math.random() * arr.length);
-        } while (index === lastWhisperIndex && arr.length > 1);
-        lastWhisperIndex = index;
-      }
+  if (type === "experience"){
+    do {
+      index = Math.floor(Math.random() * arr.length);
+    } while (index === lastExperienceIndex && arr.length > 1);
+    lastExperienceIndex = index;
+  } else {
+    do {
+      index = Math.floor(Math.random() * arr.length);
+    } while (index === lastWhisperIndex && arr.length > 1);
+    lastWhisperIndex = index;
+  }
 
-      return arr[index];
-    }
+  return arr[index];
+}
 
-    function openExperience(url){
-      lastExperienceUrl = url;
-      bfTitle.textContent = "i-Experiencer";
-      bfFrame.src = url;
-      bfOverlay.classList.add("isOpen");
-      bfOverlay.setAttribute("aria-hidden","false");
-      statusEl.textContent = "";
-    }
+const oracleTap = document.getElementById("oracleTap");
+const bfOverlay = document.getElementById("bfOverlay");
+const bfFrame = document.getElementById("bfFrame");
 
-    function openWhisper(msg){
-      whisperText.textContent = msg;
-      whisperOverlay.classList.add("isOpen");
-      whisperOverlay.setAttribute("aria-hidden","false");
-      statusEl.textContent = "";
-    }
+const whisperOverlay = document.getElementById("whisperOverlay");
+const whisperText = document.getElementById("whisperText");
 
-    function closeWhisper(){
-      whisperOverlay.classList.remove("isOpen");
-      whisperOverlay.setAttribute("aria-hidden","true");
-      statusEl.textContent = "";
-    }
+function openExperience(url){
+  bfFrame.src = url;
+  bfOverlay.classList.add("isOpen");
+}
 
-    function closeExperienceAndWhisper(){
-      bfOverlay.classList.remove("isOpen");
-      bfOverlay.setAttribute("aria-hidden","true");
-      bfFrame.src = "about:blank";
-      setTimeout(() => openWhisper(pickRandom(WHISPERS, "whisper")), 120);
-    }
+function openWhisper(msg){
+  whisperText.textContent = msg;
+  whisperOverlay.classList.add("isOpen");
+}
 
-    bfBack.addEventListener("click", closeExperienceAndWhisper);
-    bfClose.addEventListener("click", closeExperienceAndWhisper);
+function closeAll(){
+  bfOverlay.classList.remove("isOpen");
+  whisperOverlay.classList.remove("isOpen");
+  bfFrame.src = "";
+}
 
-    bfOpen.addEventListener("click", () => {
-      if (lastExperienceUrl) window.location.href = lastExperienceUrl;
-    });
+bfOverlay.addEventListener("click", closeAll);
+whisperOverlay.addEventListener("click", closeAll);
 
-    whisperBack.addEventListener("click", closeWhisper);
-    whisperClose.addEventListener("click", closeWhisper);
+oracleTap.addEventListener("click", () => {
 
-    oracleTap.addEventListener("click", () => {
-      statusEl.textContent = "…";
-      const whisperFirst = (Math.random() < 0.35);
+  const whisperFirst = Math.random() < 0.35;
 
-      if (whisperFirst){
-        openWhisper(pickRandom(WHISPERS, "whisper"));
-        return;
-      }
+  if (whisperFirst){
+    openWhisper(pickRandom(WHISPERS, "whisper"));
+    return;
+  }
 
-      if (!EXPERIENCES.length){
-        statusEl.textContent = "No experiences configured yet.";
-        return;
-      }
+  openExperience(pickRandom(EXPERIENCES, "experience"));
+});
 
-      openExperience(pickRandom(EXPERIENCES, "experience"));
-    });
-  </script>
+</script>
+
 </body>
 </html>
