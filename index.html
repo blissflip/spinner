@@ -3,62 +3,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#000000" />
   <title>BlissFlip ¿</title>
 
   <style>
-    :root{
-      --bg-img: url("Copilot_20250819_075823.png");
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.72);
-    }
-
-    html, body { height: 100%; }
-
     body{
       margin:0;
-      color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      overflow-x: hidden;
-      overflow-y: auto;
-      background:
-        radial-gradient(1200px 600px at 50% 45%, rgba(0,0,0,.06), rgba(0,0,0,.52)),
-        var(--bg-img) center/cover no-repeat;
-    }
-
-    .wrap{
-      min-height: 100svh;
+      font-family: system-ui;
+      background:black;
+      color:white;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:20px;
-    }
-
-    .stage{
+      height:100vh;
       text-align:center;
-      max-width: 900px;
-      width:100%;
-    }
-
-    .headline{
-      font-size:28px;
-      margin-bottom:10px;
-    }
-
-    .sub{
-      font-size:14px;
-      color:var(--muted);
-      margin-bottom:20px;
     }
 
     .portal{
-      width:300px;
-      height:300px;
-      margin:auto;
+      width:280px;
+      height:280px;
       border-radius:50%;
-      display:grid;
-      place-items:center;
-      background: radial-gradient(circle, rgba(255,255,255,.1), rgba(0,0,0,.4));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(circle, rgba(255,255,255,.1), rgba(0,0,0,.5));
       cursor:pointer;
     }
 
@@ -66,28 +33,32 @@
       font-size:120px;
     }
 
-    .bfOverlay{
-      position: fixed;
-      inset: 0;
-      display: none;
-      z-index: 99999;
-      background: rgba(0,0,0,0.95);
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:none;
+      background:black;
+      z-index:9999;
     }
 
-    .bfOverlay.isOpen{ display:block; }
+    .overlay.active{
+      display:block;
+    }
 
-    .bfFrame{
+    iframe{
       width:100%;
       height:100%;
       border:0;
     }
 
-    .whisperText{
-      color:white;
+    .whisper{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100%;
       font-size:22px;
-      text-align:center;
       padding:40px;
-      white-space: pre-line;
+      white-space:pre-line;
     }
 
   </style>
@@ -95,36 +66,27 @@
 
 <body>
 
-<div class="wrap">
-  <div class="stage">
-    <div class="headline">BlissFlip ¿</div>
-    <div class="sub">Tap once. Let the moment choose.</div>
-
-    <div id="oracleTap" class="portal">
-      <div class="qmark">¿</div>
-    </div>
-  </div>
+<div id="tap" class="portal">
+  <div class="qmark">¿</div>
 </div>
 
-<!-- Experience -->
-<div id="bfOverlay" class="bfOverlay">
-  <iframe id="bfFrame" class="bfFrame"></iframe>
+<div id="videoOverlay" class="overlay">
+  <iframe id="videoFrame"></iframe>
 </div>
 
-<!-- Whisper -->
-<div id="whisperOverlay" class="bfOverlay">
-  <div id="whisperText" class="whisperText"></div>
+<div id="whisperOverlay" class="overlay">
+  <div id="whisperText" class="whisper"></div>
 </div>
 
 <script>
 
 const EXPERIENCES = [
-  "https://iframe.mediadelivery.net/play/478159/39decb6a-b113-47c4-ab57-fb0085381f0b",
-  "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed",
-  "https://iframe.mediadelivery.net/play/478159/757ad818-9626-4f0c-84ef-1aff6fcba5ad",
-  "https://iframe.mediadelivery.net/play/478159/4143f333-ae29-41e8-81ea-e845a14aba95",
-  "https://iframe.mediadelivery.net/play/478159/318be683-c664-41e6-8e0c-608bf3c68e5a",
-  "https://iframe.mediadelivery.net/play/478159/5cbf9987-aa77-4ca3-a7c2-e4d2aaa50248"
+  "https://iframe.mediadelivery.net/play/478159/39decb6a-b113-47c4-ab57-fb0085381f0b?autoplay=true&muted=true",
+  "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed?autoplay=true&muted=true",
+  "https://iframe.mediadelivery.net/play/478159/757ad818-9626-4f0c-84ef-1aff6fcba5ad?autoplay=true&muted=true",
+  "https://iframe.mediadelivery.net/play/478159/4143f333-ae29-41e8-81ea-e845a14aba95?autoplay=true&muted=true",
+  "https://iframe.mediadelivery.net/play/478159/318be683-c664-41e6-8e0c-608bf3c68e5a?autoplay=true&muted=true",
+  "https://iframe.mediadelivery.net/play/478159/5cbf9987-aa77-4ca3-a7c2-e4d2aaa50248?autoplay=true&muted=true"
 ];
 
 const WHISPERS = [
@@ -136,64 +98,59 @@ const WHISPERS = [
   "You were never meant\nto fix everything."
 ];
 
-let lastExperienceIndex = -1;
-let lastWhisperIndex = -1;
+let lastExperience = -1;
+let lastWhisper = -1;
 
-function pickRandom(arr, type){
-  let index;
+function pick(arr, type){
+  let i;
+  do{
+    i = Math.floor(Math.random() * arr.length);
+  } while(
+    (type === "exp" && i === lastExperience && arr.length > 1) ||
+    (type === "wh" && i === lastWhisper && arr.length > 1)
+  );
 
-  if (type === "experience"){
-    do {
-      index = Math.floor(Math.random() * arr.length);
-    } while (index === lastExperienceIndex && arr.length > 1);
-    lastExperienceIndex = index;
-  } else {
-    do {
-      index = Math.floor(Math.random() * arr.length);
-    } while (index === lastWhisperIndex && arr.length > 1);
-    lastWhisperIndex = index;
-  }
+  if(type === "exp") lastExperience = i;
+  if(type === "wh") lastWhisper = i;
 
-  return arr[index];
+  return arr[i];
 }
 
-const oracleTap = document.getElementById("oracleTap");
-const bfOverlay = document.getElementById("bfOverlay");
-const bfFrame = document.getElementById("bfFrame");
+const tap = document.getElementById("tap");
+const videoOverlay = document.getElementById("videoOverlay");
+const videoFrame = document.getElementById("videoFrame");
 
 const whisperOverlay = document.getElementById("whisperOverlay");
 const whisperText = document.getElementById("whisperText");
 
-function openExperience(url){
-  bfFrame.src = url;
-  bfOverlay.classList.add("isOpen");
+function showVideo(url){
+  videoFrame.src = url;
+  videoOverlay.classList.add("active");
 }
 
-function openWhisper(msg){
+function showWhisper(msg){
   whisperText.textContent = msg;
-  whisperOverlay.classList.add("isOpen");
+  whisperOverlay.classList.add("active");
 }
 
 function closeAll(){
-  bfOverlay.classList.remove("isOpen");
-  whisperOverlay.classList.remove("isOpen");
-  bfFrame.src = "";
+  videoOverlay.classList.remove("active");
+  whisperOverlay.classList.remove("active");
+  videoFrame.src = "";
 }
 
-bfOverlay.addEventListener("click", closeAll);
-whisperOverlay.addEventListener("click", closeAll);
+videoOverlay.onclick = closeAll;
+whisperOverlay.onclick = closeAll;
 
-oracleTap.addEventListener("click", () => {
+tap.onclick = () => {
 
-  const whisperFirst = Math.random() < 0.35;
-
-  if (whisperFirst){
-    openWhisper(pickRandom(WHISPERS, "whisper"));
+  if(Math.random() < 0.35){
+    showWhisper(pick(WHISPERS, "wh"));
     return;
   }
 
-  openExperience(pickRandom(EXPERIENCES, "experience"));
-});
+  showVideo(pick(EXPERIENCES, "exp"));
+};
 
 </script>
 
