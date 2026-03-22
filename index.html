@@ -74,7 +74,6 @@
       text-shadow: 0 10px 30px rgba(0,0,0,.55);
     }
 
-    /* ===== Portal with HARD circular clipping (fixes iOS “lower-half square leak”) ===== */
     .portal{
       width: clamp(260px, 82vw, 520px);
       height: clamp(260px, 82vw, 520px);
@@ -85,7 +84,6 @@
       border-radius: 50%;
       overflow: hidden;
 
-      /* Hard clip WebKit compositor surfaces */
       -webkit-clip-path: circle(50% at 50% 50%);
       clip-path: circle(50% at 50% 50%);
       contain: paint;
@@ -116,13 +114,11 @@
       .sub{ font-size: 13px; }
     }
 
-    /* Swirl (animated) */
     .swirl{
       position:absolute;
       inset:-40%;
       border-radius:50%;
 
-      /* ALSO hard-clip the swirl surface */
       -webkit-clip-path: circle(50% at 50% 50%);
       clip-path: circle(50% at 50% 50%);
 
@@ -154,7 +150,6 @@
       100% { transform: translateZ(0) rotate(360deg) scale(1.06); }
     }
 
-    /* Soft “glass” overlay (clipped too) */
     .portal::after{
       content:"";
       position:absolute;
@@ -162,11 +157,9 @@
       border-radius:50%;
       pointer-events:none;
 
-      /* Hard-clip overlay as well */
       -webkit-clip-path: circle(50% at 50% 50%);
       clip-path: circle(50% at 50% 50%);
 
-      /* gentle glow; avoids heavy darkening */
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.10),
         inset 0 0 40px rgba(140,220,255,.10);
@@ -259,7 +252,6 @@
       letter-spacing: .02em;
     }
 
-    /* ===== Overlays ===== */
     .bfOverlay{
       position: fixed;
       inset: 0;
@@ -338,6 +330,7 @@
       text-align:center;
       color: rgba(255,255,255,.92);
       text-shadow: 0 12px 40px rgba(0,0,0,.65);
+      white-space: pre-line;
     }
   </style>
 </head>
@@ -369,7 +362,6 @@
     </main>
   </div>
 
-  <!-- i-Experiencer overlay -->
   <div id="bfOverlay" class="bfOverlay" aria-hidden="true">
     <div class="bfBar">
       <button id="bfBack" class="bfBtn" type="button">← Return</button>
@@ -391,7 +383,6 @@
     ></iframe>
   </div>
 
-  <!-- Whisper overlay -->
   <div id="whisperOverlay" class="bfOverlay" aria-hidden="true">
     <div class="bfBar">
       <button id="whisperBack" class="bfBtn" type="button">← Return</button>
@@ -413,15 +404,15 @@
     ];
 
     const WHISPERS = [
-  "What doesn’t fade\nwas never held by the body.",
-  "Maybe we are already building it—\nin the way we choose to love.",
-  "The tighter the grip,\nthe more slips through.",
-  "That space you’re holding\nis already more than enough.",
-  "It isn’t control\nthe moment you see it.",
-  "Sometimes the quiet way we care\nis the whole world, in motion.",
-  "You were never meant\nto fix everything.",
-  "Nothing missing.\nNothing required.",
-  "Nothing to figure out.\nJust notice."
+      "What doesn’t fade\nwas never held by the body.",
+      "Maybe we are already building it—\nin the way we choose to love.",
+      "The tighter the grip,\nthe more slips through.",
+      "That space you’re holding\nis already more than enough.",
+      "It isn’t control\nthe moment you see it.",
+      "Sometimes the quiet way we care\nis the whole world, in motion.",
+      "You were never meant\nto fix everything.",
+      "Nothing missing.\nNothing required.",
+      "Nothing to figure out.\nJust notice."
     ];
 
     const oracleTap = document.getElementById("oracleTap");
@@ -440,9 +431,25 @@
     const whisperClose   = document.getElementById("whisperClose");
 
     let lastExperienceUrl = "";
+    let lastExperienceIndex = -1;
+    let lastWhisperIndex = -1;
 
-    function pickRandom(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
+    function pickRandom(arr, type){
+      let index;
+
+      if (type === "experience"){
+        do {
+          index = Math.floor(Math.random() * arr.length);
+        } while (index === lastExperienceIndex && arr.length > 1);
+        lastExperienceIndex = index;
+      } else {
+        do {
+          index = Math.floor(Math.random() * arr.length);
+        } while (index === lastWhisperIndex && arr.length > 1);
+        lastWhisperIndex = index;
+      }
+
+      return arr[index];
     }
 
     function openExperience(url){
@@ -471,7 +478,7 @@
       bfOverlay.classList.remove("isOpen");
       bfOverlay.setAttribute("aria-hidden","true");
       bfFrame.src = "about:blank";
-      setTimeout(() => openWhisper(pickRandom(WHISPERS)), 120);
+      setTimeout(() => openWhisper(pickRandom(WHISPERS, "whisper")), 120);
     }
 
     bfBack.addEventListener("click", closeExperienceAndWhisper);
@@ -489,7 +496,7 @@
       const whisperFirst = (Math.random() < 0.35);
 
       if (whisperFirst){
-        openWhisper(pickRandom(WHISPERS));
+        openWhisper(pickRandom(WHISPERS, "whisper"));
         return;
       }
 
@@ -498,7 +505,7 @@
         return;
       }
 
-      openExperience(pickRandom(EXPERIENCES));
+      openExperience(pickRandom(EXPERIENCES, "experience"));
     });
   </script>
 </body>
