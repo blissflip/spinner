@@ -1,158 +1,440 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>BlissFlip ¿</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlissFlip</title>
   <style>
-    body{
-      margin:0;
-      font-family: system-ui;
-      background:black;
-      color:white;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      height:100vh;
-      text-align:center;
+    * {
+      box-sizing: border-box;
     }
 
-    .portal{
-      width:280px;
-      height:280px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: radial-gradient(circle, rgba(255,255,255,.1), rgba(0,0,0,.5));
-      cursor:pointer;
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Georgia, serif;
+      background: #000;
+      color: #fff;
     }
 
-    .qmark{
-      font-size:120px;
+    body {
+      position: relative;
     }
 
-    .overlay{
-      position:fixed;
-      inset:0;
-      display:none;
-      background:black;
-      z-index:9999;
+    .home {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.04), rgba(0,0,0,0.18) 30%, rgba(0,0,0,0.75) 68%, rgba(0,0,0,0.95) 100%),
+        linear-gradient(180deg, #050505 0%, #000 100%);
     }
 
-    .overlay.active{
-      display:block;
+    /* Put your background image file path here if wanted */
+    .home-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url("YOUR-BACKGROUND-IMAGE-HERE");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.32;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    iframe{
-      width:100%;
-      height:100%;
-      border:0;
+    .home::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at center, rgba(0,0,0,0.04), rgba(0,0,0,0.34) 48%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+      pointer-events: none;
     }
 
-    .whisper{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      height:100%;
-      font-size:22px;
-      padding:40px;
-      white-space:pre-line;
+    .center-wrap {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 42px;
     }
 
+    .symbol-btn {
+      width: 320px;
+      height: 320px;
+      max-width: 42vw;
+      max-height: 42vw;
+      min-width: 180px;
+      min-height: 180px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.01) 25%, rgba(0,0,0,0.18) 68%, rgba(0,0,0,0.32) 100%);
+      box-shadow:
+        0 0 80px rgba(255,255,255,0.03),
+        inset 0 0 60px rgba(255,255,255,0.015);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      backdrop-filter: blur(1px);
+    }
+
+    .symbol-btn:hover {
+      transform: scale(1.02);
+      box-shadow:
+        0 0 100px rgba(255,255,255,0.05),
+        inset 0 0 60px rgba(255,255,255,0.02);
+    }
+
+    .symbol-btn:active {
+      transform: scale(0.985);
+    }
+
+    .symbol-btn img,
+    .symbol-btn svg {
+      width: 30%;
+      height: 30%;
+      object-fit: contain;
+      display: block;
+      pointer-events: none;
+    }
+
+    .symbol-fallback {
+      font-size: 6.2rem;
+      line-height: 1;
+      color: #fff;
+      opacity: 0.96;
+      pointer-events: none;
+      transform: translateY(-2px);
+    }
+
+    .whisper {
+      position: absolute;
+      left: 50%;
+      bottom: 48px;
+      transform: translateX(-50%);
+      z-index: 2;
+      width: min(90vw, 900px);
+      text-align: center;
+      font-size: 1rem;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.65);
+      padding: 0 20px;
+      white-space: pre-line;
+      pointer-events: none;
+    }
+
+    .book-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 42px;
+      z-index: 3;
+      background: #8a5a16;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 -1px 0 rgba(255,255,255,0.08) inset;
+    }
+
+    .book-bar a {
+      color: #f3e3c7;
+      text-decoration: none;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
+    }
+
+    .book-bar a:hover {
+      text-decoration: underline;
+    }
+
+    .experience-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: none;
+      z-index: 9999;
+    }
+
+    .experience-overlay.active {
+      display: block;
+    }
+
+    .experience-topbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      z-index: 10003;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.65), rgba(0,0,0,0));
+      pointer-events: none;
+    }
+
+    .nav-btn {
+      pointer-events: auto;
+      border: none;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .nav-btn:active {
+      transform: scale(0.97);
+    }
+
+    .experience-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #000;
+      z-index: 10000;
+    }
+
+    .tap-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.04), rgba(0,0,0,0.45) 35%, rgba(0,0,0,0.84) 100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .tap-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .tap-card {
+      text-align: center;
+      padding: 28px 32px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 50px rgba(0,0,0,0.35);
+      max-width: 90vw;
+    }
+
+    .tap-title {
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      letter-spacing: 0.03em;
+    }
+
+    .tap-subtitle {
+      font-size: 0.98rem;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+
+    .tap-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .tap-btn:hover {
+      background: rgba(255,255,255,0.24);
+    }
+
+    .tap-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 700px) {
+      .symbol-fallback {
+        font-size: 4.5rem;
+      }
+
+      .whisper {
+        font-size: 0.9rem;
+        bottom: 50px;
+      }
+
+      .book-bar {
+        height: 40px;
+      }
+
+      .book-bar a {
+        font-size: 0.88rem;
+      }
+
+      .tap-card {
+        padding: 22px 20px;
+      }
+
+      .tap-title {
+        font-size: 1.08rem;
+      }
+
+      .tap-subtitle {
+        font-size: 0.92rem;
+      }
+    }
   </style>
 </head>
-
 <body>
+  <div class="home">
+    <div class="home-bg"></div>
 
-<div id="tap" class="portal">
-  <div class="qmark">¿</div>
-</div>
+    <div class="center-wrap">
+      <button class="symbol-btn" id="spinBtn" aria-label="Enter experience">
+        <!-- Replace with your symbol image if desired -->
+        <!-- <img src="YOUR-SYMBOL-IMAGE-HERE" alt="BlissFlip symbol" /> -->
+        <div class="symbol-fallback">¿</div>
+      </button>
+    </div>
 
-<div id="videoOverlay" class="overlay">
-  <iframe id="videoFrame"></iframe>
-</div>
+    <div class="whisper" id="whisperBox">
+      Neither existence nor author makes any guarantees.
+    </div>
 
-<div id="whisperOverlay" class="overlay">
-  <div id="whisperText" class="whisper"></div>
-</div>
+    <div class="book-bar">
+      <a href="YOUR-BOOK-LINK-HERE">The book behind BlissFlip →</a>
+    </div>
+  </div>
 
-<script>
+  <div class="experience-overlay" id="experienceOverlay">
+    <iframe
+      id="experienceFrame"
+      class="experience-frame"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+    ></iframe>
 
-const EXPERIENCES = [
-  "https://iframe.mediadelivery.net/play/478159/39decb6a-b113-47c4-ab57-fb0085381f0b?autoplay=true&muted=true",
-  "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed?autoplay=true&muted=true",
-  "https://iframe.mediadelivery.net/play/478159/757ad818-9626-4f0c-84ef-1aff6fcba5ad?autoplay=true&muted=true",
-  "https://iframe.mediadelivery.net/play/478159/4143f333-ae29-41e8-81ea-e845a14aba95?autoplay=true&muted=true",
-  "https://iframe.mediadelivery.net/play/478159/318be683-c664-41e6-8e0c-608bf3c68e5a?autoplay=true&muted=true",
-  "https://iframe.mediadelivery.net/play/478159/5cbf9987-aa77-4ca3-a7c2-e4d2aaa50248?autoplay=true&muted=true"
-];
+    <div class="tap-overlay active" id="tapOverlay">
+      <div class="tap-card">
+        <div class="tap-title">Tap to begin</div>
+        <div class="tap-subtitle">Enter the experience with sound.</div>
+        <button class="tap-btn" id="tapBeginBtn">Begin</button>
+      </div>
+    </div>
 
-const WHISPERS = [
-  "What doesn’t fade\nwas never held by the body.",
-  "Maybe we are already building it—\nin the way we choose to love.",
-  "The tighter the grip,\nthe more slips through.",
-  "That space you’re holding\nis already more than enough.",
-  "Nothing missing.\nNothing required.",
-  "You were never meant\nto fix everything."
-];
+    <div class="experience-topbar">
+      <button class="nav-btn" id="backBtn">← Return</button>
+      <button class="nav-btn" id="closeBtn">✕</button>
+    </div>
+  </div>
 
-let lastExperience = -1;
-let lastWhisper = -1;
+  <script>
+    const EXPERIENCES = [
+      "https://iframe.mediadelivery.net/play/478159/39decb6a-b113-47c4-ab57-fb0085381f0b",
+      "https://iframe.mediadelivery.net/play/478159/33499ff2-e71e-4522-bcbe-2206a14752ed",
+      "https://iframe.mediadelivery.net/play/478159/757ad818-9626-4f0c-84ef-1aff6fcba5ad",
+      "https://iframe.mediadelivery.net/play/478159/4143f333-ae29-41e8-81ea-e845a14aba95",
+      "https://iframe.mediadelivery.net/play/478159/318be683-c664-41e6-8e0c-608bf3c68e5a"
+    ];
 
-function pick(arr, type){
-  let i;
-  do{
-    i = Math.floor(Math.random() * arr.length);
-  } while(
-    (type === "exp" && i === lastExperience && arr.length > 1) ||
-    (type === "wh" && i === lastWhisper && arr.length > 1)
-  );
+    const WHISPERS = [
+      "Neither existence nor author makes any guarantees.",
+      "What doesn’t fade\nwas never held by the body.",
+      "Maybe we are already building it—\nin the way we choose to love.",
+      "The tighter the grip,\nthe more slips through.",
+      "That space you’re holding\nis already more than enough.",
+      "You were never meant to fix everything."
+    ];
 
-  if(type === "exp") lastExperience = i;
-  if(type === "wh") lastWhisper = i;
+    const spinBtn = document.getElementById("spinBtn");
+    const whisperBox = document.getElementById("whisperBox");
+    const experienceOverlay = document.getElementById("experienceOverlay");
+    const experienceFrame = document.getElementById("experienceFrame");
+    const closeBtn = document.getElementById("closeBtn");
+    const backBtn = document.getElementById("backBtn");
+    const tapOverlay = document.getElementById("tapOverlay");
+    const tapBeginBtn = document.getElementById("tapBeginBtn");
 
-  return arr[i];
-}
+    let currentExperience = null;
 
-const tap = document.getElementById("tap");
-const videoOverlay = document.getElementById("videoOverlay");
-const videoFrame = document.getElementById("videoFrame");
+    function randomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
 
-const whisperOverlay = document.getElementById("whisperOverlay");
-const whisperText = document.getElementById("whisperText");
+    function buildMutedPreviewUrl(baseUrl) {
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      return baseUrl + separator + "autoplay=1&muted=1&playsinline=1&preload=true";
+    }
 
-function showVideo(url){
-  videoFrame.src = url;
-  videoOverlay.classList.add("active");
-}
+    function buildSoundStartUrl(baseUrl) {
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      return baseUrl + separator + "autoplay=1&muted=0&playsinline=1&preload=true";
+    }
 
-function showWhisper(msg){
-  whisperText.textContent = msg;
-  whisperOverlay.classList.add("active");
-}
+    function openExperienceChooser() {
+      currentExperience = randomItem(EXPERIENCES);
+      whisperBox.textContent = randomItem(WHISPERS);
 
-function closeAll(){
-  videoOverlay.classList.remove("active");
-  whisperOverlay.classList.remove("active");
-  videoFrame.src = "";
-}
+      experienceOverlay.classList.add("active");
+      tapOverlay.classList.add("active");
 
-videoOverlay.onclick = closeAll;
-whisperOverlay.onclick = closeAll;
+      /* Optional muted preview beneath overlay */
+      experienceFrame.src = buildMutedPreviewUrl(currentExperience);
+    }
 
-tap.onclick = () => {
+    function beginExperienceWithSound() {
+      if (!currentExperience) return;
 
-  if(Math.random() < 0.35){
-    showWhisper(pick(WHISPERS, "wh"));
-    return;
-  }
+      tapOverlay.classList.remove("active");
 
-  showVideo(pick(EXPERIENCES, "exp"));
-};
+      /* Reload with sound after explicit user click */
+      experienceFrame.src = buildSoundStartUrl(currentExperience);
+    }
 
-</script>
+    function closeExperience() {
+      experienceOverlay.classList.remove("active");
+      tapOverlay.classList.add("active");
+      experienceFrame.src = "";
+      currentExperience = null;
+    }
 
+    spinBtn.addEventListener("click", openExperienceChooser);
+    tapBeginBtn.addEventListener("click", beginExperienceWithSound);
+    closeBtn.addEventListener("click", closeExperience);
+    backBtn.addEventListener("click", closeExperience);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && experienceOverlay.classList.contains("active")) {
+        closeExperience();
+      }
+    });
+  </script>
 </body>
 </html>
