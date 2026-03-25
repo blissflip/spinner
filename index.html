@@ -476,7 +476,7 @@
     bfBack.addEventListener("click", closeExperienceAndWhisper);
     bfClose.addEventListener("click", closeExperienceAndWhisper);
 
-    bfOpen.addEventListener("click", () => {
+   if (bfOpen) bfOpen.addEventListener("click", () => {
   if (lastExperienceUrl) {
     window.open(lastExperienceUrl, "_blank");
   }
