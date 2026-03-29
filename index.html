@@ -1,173 +1,356 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>BlissFlip</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BlissFlip Forever</title>
+  <style>
+    :root{
+      --bg1:#06070a;
+      --bg2:#121826;
+      --text:#f4f1ea;
+      --muted:rgba(255,255,255,.72);
+      --soft:rgba(255,255,255,.56);
+      --line:rgba(255,255,255,.14);
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.09);
+      --accent:#e9dcc2;
+      --danger:#ffb7b7;
+      --ok:#d9f7c8;
+    }
 
-<style>
-body{
-  margin:0;
-  font-family:system-ui;
-  color:white;
-  background:black;
-  text-align:center;
-}
+    * { box-sizing:border-box; }
 
-.wrap{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-}
+    html, body {
+      margin:0;
+      padding:0;
+      min-height:100%;
+      font-family: Georgia, "Times New Roman", serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,.06), transparent 35%),
+        linear-gradient(180deg, var(--bg2), var(--bg1));
+    }
 
-.qmark{
-  font-size:120px;
-  cursor:pointer;
-}
+    body {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px 18px 90px;
+    }
 
-/* GATEWAY */
-#gateway{
-  position:fixed;
-  inset:0;
-  background:black;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-}
+    .wrap {
+      width:100%;
+      max-width:720px;
+      text-align:center;
+    }
 
-.gatewayCard{
-  max-width:640px;
-  padding:20px;
-}
+    .card {
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:34px 24px 28px;
+      box-shadow:0 20px 70px rgba(0,0,0,.35);
+      backdrop-filter: blur(4px);
+    }
 
-.gatewayLead{
-  font-size:32px;
-  margin-bottom:10px;
-}
+    h1 {
+      margin:0 0 10px;
+      font-size:clamp(32px, 6vw, 54px);
+      font-weight:500;
+      letter-spacing:.02em;
+    }
 
-.gatewaySub{
-  font-size:16px;
-  color:#ccc;
-  margin-bottom:18px;
-}
+    .sub {
+      margin:0 auto 24px;
+      max-width:520px;
+      font-size:17px;
+      line-height:1.6;
+      color:var(--muted);
+    }
 
-.gatewayDivider{
-  height:1px;
-  background:#333;
-  margin:20px 0;
-}
+    .gatewayPath {
+      margin:0 auto 24px;
+      max-width:480px;
+      padding:16px 18px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:var(--panel);
+      color:var(--muted);
+      line-height:1.55;
+      font-size:15px;
+    }
 
-.gatewayPath{
-  border:1px solid #333;
-  padding:12px;
-  margin-bottom:12px;
-  border-radius:10px;
-}
+    .unlockBlock {
+      margin:24px auto 0;
+      max-width:460px;
+      padding:22px 18px 18px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:var(--panel2);
+    }
 
-.gatewayLink{
-  display:block;
-  margin:10px 0;
-  padding:12px;
-  border:1px solid #555;
-  border-radius:10px;
-  text-decoration:none;
-  color:white;
-}
+    .unlockTitle {
+      margin:0 0 12px;
+      font-size:18px;
+      letter-spacing:.02em;
+    }
 
-input{
-  margin-top:10px;
-  padding:10px;
-  width:200px;
-  text-align:center;
-}
+    #unlockInstructions {
+      margin:0 auto 16px;
+      font-size:14px;
+      line-height:1.6;
+      color:rgba(255,255,255,0.84);
+      text-align:center;
+      max-width:410px;
+    }
 
-button{
-  margin-top:10px;
-  padding:10px 20px;
-}
-</style>
+    .inputRow {
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    input[type="text"] {
+      width:min(100%, 320px);
+      padding:13px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(0,0,0,.28);
+      color:#fff;
+      outline:none;
+      font-size:15px;
+      text-align:center;
+    }
+
+    input[type="text"]::placeholder {
+      color:rgba(255,255,255,.45);
+    }
+
+    button {
+      padding:13px 18px;
+      border:none;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:15px;
+      background:var(--accent);
+      color:#111;
+      font-weight:600;
+    }
+
+    button:hover {
+      opacity:.95;
+    }
+
+    #message {
+      min-height:24px;
+      margin-top:14px;
+      font-size:14px;
+      line-height:1.5;
+      color:var(--soft);
+    }
+
+    .error {
+      color:var(--danger);
+    }
+
+    .success {
+      color:var(--ok);
+    }
+
+    #unlockedContent {
+      display:none;
+      margin-top:26px;
+      padding-top:22px;
+      border-top:1px solid var(--line);
+    }
+
+    .enterLink {
+      display:inline-block;
+      margin-top:12px;
+      padding:14px 18px;
+      border-radius:12px;
+      text-decoration:none;
+      color:#111;
+      background:var(--accent);
+      font-weight:600;
+    }
+
+    .enterLink:hover {
+      opacity:.95;
+    }
+
+    #booklink {
+      position:fixed;
+      left:50%;
+      bottom:14px;
+      transform:translateX(-50%);
+      z-index:99999;
+      font:12px/1.25 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      opacity:.82;
+      text-align:center;
+      width:min(92vw, 700px);
+      pointer-events:none;
+    }
+
+    #booklink a {
+      pointer-events:auto;
+      color:rgba(255,255,255,.76);
+      text-decoration:none;
+      border-bottom:1px solid rgba(255,255,255,.25);
+    }
+
+    #booklink a:hover {
+      color:#fff;
+      border-bottom-color:rgba(255,255,255,.55);
+    }
+
+    .footerNote {
+      font-size:11px;
+      color:rgba(255,255,255,.62);
+      margin-bottom:5px;
+      white-space:normal;
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding:28px 18px 22px;
+      }
+
+      .sub {
+        font-size:16px;
+      }
+
+      .gatewayPath {
+        font-size:14px;
+      }
+
+      input[type="text"] {
+        width:100%;
+      }
+
+      button {
+        width:100%;
+      }
+
+      .inputRow {
+        flex-direction:column;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <div class="card">
+      <h1>BlissFlip Forever</h1>
 
-<div class="wrap">
-  <div class="qmark">¿</div>
-</div>
+      <p class="sub">
+        A threshold experience.<br>
+        Not entered by purchase alone — but by recognition.
+      </p>
 
-<!-- GATEWAY -->
-<div id="gateway">
-  <div class="gatewayCard">
+      <div class="gatewayPath">
+        <strong>Print Edition — $14</strong><br>
+        For those who go further.<br>
+        A whisper placed into BlissFlip Forever,<br>
+        while it is still being personally shaped.
+      </div>
 
-    <div class="gatewayLead">
-      At last… something to awaken.
+      <div class="unlockBlock">
+        <div class="unlockTitle">Enter the whisper</div>
+
+        <div id="unlockInstructions">
+          Unlock requires a whisper from the book.<br><br>
+
+          Look within the pages for a phrase that reveals itself.<br>
+          Not highlighted. Not announced.<br>
+          Only recognized.<br><br>
+
+          Enter the whisper exactly as you find it.
+        </div>
+
+        <div class="inputRow">
+          <input
+            type="text"
+            id="unlockInput"
+            placeholder="Enter the whisper..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button type="button" onclick="checkUnlock()">Enter</button>
+        </div>
+
+        <div id="message"></div>
+
+        <div id="unlockedContent">
+          <p style="margin:0 0 10px; font-size:18px;">
+            The threshold opens.
+          </p>
+          <p style="margin:0 auto 14px; max-width:430px; color:var(--muted); line-height:1.6;">
+            You found the whisper.<br>
+            Enter BlissFlip Forever.
+          </p>
+
+          <!-- CHANGE THIS LINK if your destination page is different -->
+          <a class="enterLink" href="https://blissflip.com/app" target="_blank" rel="noopener">
+            Enter BlissFlip Forever
+          </a>
+        </div>
+      </div>
     </div>
-
-    <div class="gatewaySub">
-      Some things are read. Some things are experienced.
-    </div>
-
-    <div class="gatewaySub">
-      There are apps. There are websites. There are books.<br>
-      And then… there is this.<br>
-      Like standing on the summit of Mount Kailash… where even the wind carries something sacred.
-    </div>
-
-    <div class="gatewaySub">
-      BLISSFLIP: The Divine’s Life Unpuzzler Paradigm
-    </div>
-
-    <div class="gatewaySub">
-      There are two gateways.<br>
-      Both lead into the BlissFlip Forever experience.
-    </div>
-
-    <div class="gatewayDivider"></div>
-
-    <div class="gatewayPath">
-      <strong>E-book — $2.99</strong><br>
-      The threshold.<br>
-      The phrase is there.
-    </div>
-
-    <div class="gatewayPath">
-      <strong>Print Edition — $14</strong><br>
-      For those who go further.<br>
-      A Whisper placed into BlissFlip Forever,<br>
-      while it is still being personally shaped.
-    </div>
-
-    <a class="gatewayLink" href="https://www.amazon.com/BLISSFLIP-UNPUZZLER-PARADIGM-Bliss-that-question-ebook/dp/B0GH83HMFY" target="_blank">
-      Get the e-book
-    </a>
-
-    <a class="gatewayLink" href="https://www.amazon.com/BLISSFLIP-UNPUZZLER-PARADIGM-Bliss-that-question-ebook/dp/B0GH83HMFY" target="_blank">
-      Get the print edition
-    </a>
-
-    <div class="gatewaySub">You’ll recognize it.</div>
-
-    <input id="keyInput" placeholder="...">
-    <br>
-    <button onclick="checkKey()">Enter</button>
-    <div id="error"></div>
-
   </div>
-</div>
 
-<script>
-function checkKey(){
-  const input = document.getElementById("keyInput").value.trim().toLowerCase();
+  <div id="booklink">
+    <div class="footerNote">
+      Neither existence nor author makes any guarantees.
+    </div>
+    <a href="https://www.amazon.com/" target="_blank" rel="noopener">
+      Access begins with the book
+    </a>
+  </div>
 
-  if(input === "interactive awakeners"){
-    document.getElementById("gateway").style.display = "none";
-  } else {
-    document.getElementById("error").innerText = "Not yet.";
-  }
-}
-</script>
+  <script>
+    function normalizePhrase(str) {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[“”‘’"']/g, "")
+        .replace(/\s+/g, " ");
+    }
 
+    function checkUnlock() {
+      const input = document.getElementById("unlockInput");
+      const message = document.getElementById("message");
+      const unlockedContent = document.getElementById("unlockedContent");
+
+      const entered = normalizePhrase(input.value);
+      const correct = normalizePhrase("interactive awakeners");
+
+      if (!entered) {
+        message.textContent = "Enter the whisper from the book.";
+        message.className = "error";
+        unlockedContent.style.display = "none";
+        return;
+      }
+
+      if (entered === correct) {
+        message.textContent = "Whisper recognized.";
+        message.className = "success";
+        unlockedContent.style.display = "block";
+      } else {
+        message.textContent = "That whisper does not open this threshold.";
+        message.className = "error";
+        unlockedContent.style.display = "none";
+      }
+    }
+
+    document.getElementById("unlockInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        checkUnlock();
+      }
+    });
+  </script>
 </body>
 </html>
