@@ -502,5 +502,46 @@
       openExperience(pickRandom(EXPERIENCES));
     });
   </script>
+  <div id="gateway" style="
+  position:fixed;
+  inset:0;
+  background:black;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  font-family:sans-serif;
+">
+  <div style="max-width:500px;text-align:center;">
+    <p>Some things are read.<br>Some things are entered.</p>
+
+    <input id="keyInput"
+      placeholder="..."
+      style="padding:10px;margin-top:20px;width:80%;text-align:center;"
+    >
+
+    <button onclick="checkKey()"
+      style="margin-top:10px;padding:10px 20px;">
+      Enter
+    </button>
+
+    <p id="error" style="color:#888;margin-top:10px;"></p>
+  </div>
+</div>
+
+<script>
+function checkKey() {
+  const input = document.getElementById('keyInput').value.trim().toLowerCase();
+
+  if (input === "interactive awakeners") {
+    document.getElementById('gateway').style.display = 'none';
+  } else {
+    document.getElementById('error').innerText = "Not yet.";
+  }
+}
+</script>
+<!-- GATEWAY END -->
 </body>
 </html>
