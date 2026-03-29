@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BlissFlip</title>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui, -apple-system, Segoe UI, Roboto;
+  background:#000;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+
+.gateway{
+  text-align:center;
+  max-width:600px;
+}
+
+h1{
+  font-size:42px;
+  margin-bottom:10px;
+}
+
+.sub{
+  color:#aaa;
+  margin-bottom:30px;
+}
+
+.box{
+  border:1px solid rgba(255,255,255,.2);
+  padding:18px;
+  border-radius:12px;
+  margin-bottom:16px;
+}
+
+.buttonLink{
+  display:block;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:10px;
+  margin:10px 0;
+  text-decoration:none;
+  color:white;
+}
+
+input{
+  padding:12px;
+  width:260px;
+  background:#111;
+  border:1px solid rgba(255,255,255,.2);
+  color:white;
+  text-align:center;
+  border-radius:8px;
+}
+
+button{
+  padding:12px 18px;
+  margin-top:10px;
+  background:#222;
+  border:1px solid rgba(255,255,255,.3);
+  color:white;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.error{
+  color:#888;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="gateway">
+
+  <h1>Something to awaken.</h1>
+  <div class="sub">Some things are read. Some things are entered.</div>
+
+  <div class="box">
+    <strong>E-book — $2.99</strong><br>
+    The threshold.<br>
+    The phrase is there.
+  </div>
+
+  <div class="box">
+    <strong>Print Edition — $14</strong><br>
+    For those who go further.<br>
+    A Whisper placed into BlissFlip Forever,<br>
+    while it is still being personally shaped.
+  </div>
+
+  <a class="buttonLink" href="YOUR_EBOOK_LINK_HERE" target="_blank">Get the e-book</a>
+  <a class="buttonLink" href="YOUR_PRINT_BOOK_LINK_HERE" target="_blank">Get the print edition</a>
+
+  <div style="margin-top:20px; color:#aaa;">
+    You’ll recognize it.<br>
+    Enter the phrase exactly as it appears in the book.
+  </div>
+
+  <div style="margin-top:12px;">
+    <input id="keyInput" placeholder="..." />
+  </div>
+
+  <div>
+    <button onclick="unlock()">Enter</button>
+  </div>
+
+  <div id="error" class="error"></div>
+
+</div>
+
+<script>
+function unlock(){
+  const val = document.getElementById("keyInput").value
+    .trim()
+    .toLowerCase();
+
+  if(val === "interactive awakeners"){
+    window.location.href = "https://blissflip.com";
+  } else {
+    document.getElementById("error").innerText = "Not yet.";
+  }
+}
+</script>
+
+</body>
+</html>
