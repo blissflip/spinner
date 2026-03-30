@@ -1,49 +1,123 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body{
-  margin:0;
-  background:#000;
-  color:#fff;
-  font-family:system-ui;
-  text-align:center;
-  padding:40px 20px;
-}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BlissFlip Forever</title>
+  <meta name="description" content="BlissFlip Forever">
+  <style>
+    :root{
+      --bg:#000;
+      --fg:#fff;
+      --muted:#cfcfcf;
+      --soft:rgba(255,255,255,.55);
+      --line:rgba(255,255,255,.18);
+    }
 
-p{
-  max-width:500px;
-  margin:20px auto;
-  color:#ccc;
-  line-height:1.6;
-}
-</style>
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+      background:var(--bg);
+      color:var(--fg);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    }
+
+    body{
+      overflow-x:hidden;
+    }
+
+    .page{
+      width:100%;
+      max-width:720px;
+      margin:0 auto;
+      padding:40px 20px 48px;
+      text-align:center;
+    }
+
+    .title{
+      margin:0 0 18px;
+      font-size:24px;
+      line-height:1.25;
+      font-weight:700;
+    }
+
+    .line{
+      width:100%;
+      height:1px;
+      background:var(--line);
+      margin:22px 0 26px;
+    }
+
+    .copy{
+      max-width:560px;
+      margin:0 auto 18px;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.65;
+    }
+
+    .footer{
+      margin-top:28px;
+      color:var(--soft);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .back{
+      display:inline-block;
+      margin-top:10px;
+      color:var(--fg);
+      text-decoration:none;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:11px 15px;
+    }
+
+    .back:hover,
+    .back:focus-visible{
+      background:rgba(255,255,255,.06);
+      outline:none;
+    }
+
+    @media (max-width:480px){
+      .page{
+        padding:30px 16px 38px;
+      }
+
+      .title{
+        font-size:21px;
+      }
+
+      .copy{
+        font-size:15px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <main class="page">
+    <h1 class="title">BlissFlip Forever</h1>
 
-<p>Some will recognize this immediately.</p>
+    <div class="line"></div>
 
-<p>
-For others…<br>
-this is where it begins.
-</p>
+    <p class="copy">Some will recognize this immediately.</p>
 
-<p>
-If you’ve already seen it,<br>
-this won’t feel new.
-</p>
+    <p class="copy">For others… this is where it begins.</p>
 
-<p>
-Those who came through the book<br>
-tend to move faster here.
-</p>
+    <p class="copy">If you’ve already seen it, this won’t feel new.</p>
 
-<p>
-The moment you stop trying to solve it…<br>
-is the moment it opens.
-</p>
+    <p class="copy">Those who came through the book tend to move faster here.</p>
 
+    <p class="copy">The moment you stop trying to solve it… is the moment it opens.</p>
+
+    <a class="back" href="index.html">Return</a>
+
+    <div class="footer">
+      Nothing here is taught. Only encountered.
+    </div>
+  </main>
 </body>
 </html>
