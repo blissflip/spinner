@@ -1,221 +1,49 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BlissFlip</title>
-
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  background: #000;
-  color: #fff;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-
-  /* 🔑 THIS ENABLES SCROLL */
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: auto;
-  min-height: 100%;
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:system-ui;
+  text-align:center;
+  padding:40px 20px;
 }
 
-body {
-  text-align: center;
-}
-
-/* MAIN WRAPPER */
-.bf-wrap{
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 18px 16px 40px 16px;
-  box-sizing: border-box;
-}
-
-/* TEXT */
-.bf-wrap p{
-  color: #ccc;
-  line-height: 1.45;
-  margin: 12px 0;
-  font-size: 15px;
-}
-
-/* DIVIDER */
-.bf-divider{
-  margin: 18px 0 20px 0;
-  border-top: 1px solid rgba(255,255,255,.18);
-}
-
-/* BOXES */
-.bf-box{
-  border: 1px solid rgba(255,255,255,.2);
-  padding: 14px 12px;
-  border-radius: 14px;
-  margin: 12px 0;
-  line-height: 1.45;
-  font-size: 15px;
-}
-
-/* BUTTON LINKS */
-.bf-buttonLink{
-  display: block;
-  padding: 12px;
-  border: 1px solid rgba(255,255,255,.2);
-  border-radius: 14px;
-  margin: 10px 0;
-  text-decoration: none;
-  color: #fff;
-  box-sizing: border-box;
-}
-
-.bf-buttonLink:hover{
-  background: rgba(255,255,255,.05);
-}
-
-/* WHISPER TEXT */
-.bf-whisper{
-  max-width: 360px;
-  margin: 12px auto 0 auto;
-  color: #aaa;
-  line-height: 1.45;
-  font-size: 14px;
-}
-
-/* INPUT */
-.bf-input{
-  display: block;
-  margin: 16px auto 0 auto;
-  padding: 12px 10px;
-  width: min(220px, 88%);
-  background: #111;
-  border: 1px solid rgba(255,255,255,.2);
-  color: #fff;
-  text-align: center;
-  border-radius: 8px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-/* BUTTON */
-.bf-button{
-  padding: 10px 18px;
-  margin-top: 10px;
-  background: #222;
-  border: 1px solid rgba(255,255,255,.3);
-  color: #fff;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 15px;
-}
-
-.bf-button:hover{
-  background: #2b2b2b;
-}
-
-/* ERROR */
-.bf-error{
-  color: #888;
-  margin-top: 10px;
-  min-height: 20px;
-  font-size: 14px;
-}
-
-/* FOOTER */
-.bf-footerNote{
-  margin-top: 18px;
-  font-size: 11px;
-  color: rgba(255,255,255,.48);
-  line-height: 1.4;
-}
-
-/* MOBILE HEIGHT TUNING */
-@media (max-height: 800px) {
-  .bf-wrap{
-    padding-top: 12px;
-    padding-bottom: 24px;
-  }
-
-  .bf-wrap p{
-    margin: 10px 0;
-  }
-
-  .bf-box{
-    margin: 10px 0;
-    padding: 12px 10px;
-  }
-
-  .bf-divider{
-    margin: 14px 0 16px 0;
-  }
+p{
+  max-width:500px;
+  margin:20px auto;
+  color:#ccc;
+  line-height:1.6;
 }
 </style>
 </head>
 
 <body>
 
-<div class="bf-wrap">
+<p>Some will recognize this immediately.</p>
 
-  <p>There are apps. There are websites. There are books.<br>
-  And then... there is this.</p>
+<p>
+For others…<br>
+this is where it begins.
+</p>
 
-  <p>Like standing on the summit of Mount Kailash... where even the wind carries something sacred.</p>
+<p>
+If you’ve already seen it,<br>
+this won’t feel new.
+</p>
 
-  <p><strong>BLISSFLIP: The Divine’s Life Unpuzzler Paradigm</strong></p>
+<p>
+Those who came through the book<br>
+tend to move faster here.
+</p>
 
-  <p>There are two gateways.<br>
-  Both lead into the BlissFlip Forever experience.</p>
-
-  <div class="bf-divider"></div>
-
-  <div class="bf-box">
-    <strong>E-book — $2.99</strong><br>
-    The threshold.<br>
-    The phrase is there.
-  </div>
-
-  <div class="bf-box">
-    <strong>Print Edition — $14</strong><br>
-    For those who go further.<br>
-    A whisper placed into BlissFlip Forever.
-  </div>
-
-  <!-- 🔧 REPLACE LINKS -->
-  <a class="bf-buttonLink" href="YOUR_EBOOK_LINK_HERE" target="_blank">Get the e-book</a>
-  <a class="bf-buttonLink" href="YOUR_PRINT_BOOK_LINK_HERE" target="_blank">Get the print edition</a>
-
-  <p>You’ll recognize it.</p>
-
-  <div class="bf-whisper">
-    Unlock requires a whisper from the book.<br><br>
-    Look within the pages for a phrase that reveals itself.<br>
-    Enter it exactly as you find it.
-  </div>
-
-  <input id="bfKeyInput" class="bf-input" placeholder="...">
-
-  <div>
-    <button class="bf-button" onclick="bfUnlock()">Enter</button>
-  </div>
-
-  <div id="bfError" class="bf-error"></div>
-
-  <div class="bf-footerNote">
-    Neither existence nor author makes any guarantees.
-  </div>
-
-</div>
-
-<script>
-function bfUnlock() {
-  const val = document.getElementById("bfKeyInput").value.trim().toLowerCase();
-
-  if (val === "interactive awakeners") {
-    window.location.href = "YOUR_BLISSFLIP_APP_URL_HERE";
-  } else {
-    document.getElementById("bfError").innerText = "Not yet.";
-  }
-}
-</script>
+<p>
+The moment you stop trying to solve it…<br>
+is the moment it opens.
+</p>
 
 </body>
 </html>
