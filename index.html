@@ -1,225 +1,63 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BlissFlip</title>
-  <meta name="description" content="BlissFlip: The Divine’s Life Unpuzzler Paradigm">
-  <style>
-    :root {
-      --bg: #000000;
-      --fg: #ffffff;
-      --muted: #cfcfcf;
-      --soft: rgba(255,255,255,0.55);
-      --line: rgba(255,255,255,0.18);
-      --panel: rgba(255,255,255,0.03);
-      --hover: rgba(255,255,255,0.06);
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BlissFlip</title>
 
-    * {
-      box-sizing: border-box;
-    }
+<style>
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  text-align:center;
+  padding:20px;
+}
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: auto;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--fg);
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      overflow-y: auto;
-    }
+.wrap{
+  max-width:500px;
+}
 
-    body {
-      overflow-x: hidden;
-    }
+h1{
+  font-size:26px;
+  margin-bottom:20px;
+}
 
-    .page {
-      width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 36px 18px 44px;
-      text-align: center;
-    }
+p{
+  color:#ccc;
+  line-height:1.6;
+  margin:10px 0;
+}
 
-    .copy {
-      color: var(--muted);
-      line-height: 1.6;
-      margin: 0 0 16px;
-      font-size: 16px;
-    }
-
-    .title {
-      margin: 18px 0 18px;
-      font-size: 24px;
-      line-height: 1.25;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      color: var(--fg);
-    }
-
-    .divider {
-      height: 1px;
-      background: var(--line);
-      margin: 28px 0;
-    }
-
-    .card {
-      margin: 14px 0;
-      padding: 20px 18px;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: var(--panel);
-    }
-
-    .card-title {
-      display: block;
-      font-size: 18px;
-      margin-bottom: 6px;
-      color: var(--fg);
-      font-weight: 700;
-    }
-
-    .card-copy {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.5;
-      margin: 0;
-    }
-
-    .button {
-      display: block;
-      width: 100%;
-      margin: 10px 0 18px;
-      padding: 15px 16px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      color: var(--fg);
-      text-decoration: none;
-      background: transparent;
-      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-      font-size: 15px;
-      line-height: 1.35;
-      font-weight: 600;
-    }
-
-    .button:hover,
-    .button:focus-visible {
-      background: var(--hover);
-      border-color: rgba(255,255,255,0.28);
-      outline: none;
-      transform: translateY(-1px);
-    }
-
-    .enter-wrap {
-      margin-top: 8px;
-    }
-
-    .enter-button {
-      display: inline-block;
-      min-width: 260px;
-      max-width: 100%;
-      padding: 15px 18px;
-      border: 1px solid rgba(255,255,255,0.24);
-      border-radius: 14px;
-      color: var(--fg);
-      text-decoration: none;
-      background: rgba(255,255,255,0.02);
-      font-weight: 700;
-      font-size: 16px;
-      line-height: 1.35;
-      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-    }
-
-    .enter-button:hover,
-    .enter-button:focus-visible {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.32);
-      outline: none;
-      transform: translateY(-1px);
-    }
-
-    .footer {
-      margin-top: 28px;
-      color: var(--soft);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 480px) {
-      .page {
-        padding: 26px 14px 34px;
-      }
-
-      .title {
-        font-size: 21px;
-      }
-
-      .copy {
-        font-size: 15px;
-      }
-
-      .card {
-        padding: 17px 14px;
-      }
-
-      .card-title {
-        font-size: 17px;
-      }
-
-      .button,
-      .enter-button {
-        font-size: 15px;
-      }
-    }
-  </style>
+.soft{
+  color:#888;
+  font-size:14px;
+  margin-top:20px;
+}
+</style>
 </head>
+
 <body>
-  <main class="page">
 
-    <p style="color:#ff4444; font-size:22px; font-weight:bold;">
-      THE DIVINE DOES NOT GUIDE BY ACCIDENT
-    </p>
+<div class="wrap">
+  <h1>BlissFlip</h1>
 
-    <p class="copy">There are apps. There are websites. There are books.<br>And then… there is this.</p>
+  <p>BlissFlip Forever is currently being refined.</p>
 
-    <p class="copy">Not something you use.<br>Something you enter.</p>
+  <p>What you seek is not lost… only deepening.</p>
 
-    <h1 class="title">BLISSFLIP: The Divine’s Life Unpuzzler Paradigm</h1>
+  <p>Return soon.</p>
 
-    <p class="copy">You don’t arrive here by accident.</p>
+  <div class="soft">
+    The door remains.<br>
+    The experience evolves.
+  </div>
+</div>
 
-    <p class="copy">There are two ways in.</p>
-
-    <div class="divider"></div>
-
-    <section class="card">
-      <span class="card-title">E-book — $2.99</span>
-      <p class="card-copy">Start here. The entry point.</p>
-    </section>
-
-    <a class="button" href="https://www.amazon.com/dp/B0GH83HMFY" target="_blank" rel="noopener noreferrer">Begin with the e-book</a>
-
-    <section class="card">
-      <span class="card-title">Print Edition — $14</span>
-      <p class="card-copy">For those who go further.</p>
-    </section>
-
-    <a class="button" href="https://www.amazon.com/dp/B0GH883KND" target="_blank" rel="noopener noreferrer">Choose the print edition</a>
-
-    <div class="divider"></div>
-
-    <p class="copy">If you have come through either gateway…<br>you already carry what matters.</p>
-
-    <p class="copy">But what unfolds next<br>does not reveal itself the same way to everyone.</p>
-
-    <div class="enter-wrap">
-      <a class="enter-button" href="#">Enter BlissFlip Forever</a>
-    </div>
-
-    <div class="footer">Nothing here is taught. Only encountered.</div>
-
-  </main>
 </body>
 </html>
